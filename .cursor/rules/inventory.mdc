@@ -1,0 +1,13 @@
+---
+alwaysApply: true
+---
+# Overview
+
+``java
+Inventory inventory = player.getInventory();
+ItemContainer storageContainer = inventory.getStorage();
+storageContainer.addItemStack(item);
+storageContainer.removeItemStack(item);
+``
+
+Documentation: https://hytalemodding.dev/en/docs/guides/plugin/inventory-management

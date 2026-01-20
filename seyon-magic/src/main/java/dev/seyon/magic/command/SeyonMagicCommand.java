@@ -4,6 +4,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
+import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
@@ -22,8 +23,10 @@ import java.util.concurrent.CompletableFuture;
  */
 public class SeyonMagicCommand extends AbstractAsyncCommand {
 
-    // Register subcommand argument with default value "status"
-    RequiredArg<String> subcommandArg = this.withRequiredArg("argument_name", "status, reload or help", ArgTypes.STRING);
+    // Register command arguments
+    RequiredArg<String> subcommandArg = this.withRequiredArg("subcommand", "status, reload, give, or help", ArgTypes.STRING);
+    OptionalArg<String> itemTypeArg = this.withOptionalArg("itemType", "wand or grimoire", ArgTypes.STRING);
+    OptionalArg<String> qualityArg = this.withOptionalArg("quality", "common, uncommon, rare, epic, or legendary", ArgTypes.STRING);
 
     public SeyonMagicCommand() {
         super("seyon-magic", "Arcane Arts magic system commands");
@@ -41,6 +44,8 @@ public class SeyonMagicCommand extends AbstractAsyncCommand {
         switch (subcommand) {
             case "reload":
                 return handleReload(commandContext, sender);
+            case "give":
+                return handleGive(commandContext, sender);
             case "help":
                 return handleHelp(commandContext, sender);
             case "status":
@@ -86,6 +91,10 @@ public class SeyonMagicCommand extends AbstractAsyncCommand {
                     Message.raw("- Reload configuration").color(Color.WHITE)
                 ));
                 player.sendMessage(Message.join(
+                    Message.raw("  /seyon-magic give ").color(Color.GRAY),
+                    Message.raw("- Give magic item (usage: give <wand|grimoire> <quality>)").color(Color.WHITE)
+                ));
+                player.sendMessage(Message.join(
                     Message.raw("  /seyon-magic help ").color(Color.GRAY),
                     Message.raw("- Show help").color(Color.WHITE)
                 ));
@@ -112,6 +121,7 @@ public class SeyonMagicCommand extends AbstractAsyncCommand {
             context.sendMessage(Message.raw("Available Commands:"));
             context.sendMessage(Message.raw("  /seyon-magic - Show status"));
             context.sendMessage(Message.raw("  /seyon-magic reload - Reload configuration"));
+            context.sendMessage(Message.raw("  /seyon-magic give - Give magic item"));
             context.sendMessage(Message.raw("  /seyon-magic help - Show help"));
             
             return CompletableFuture.completedFuture(null);
@@ -168,9 +178,102 @@ public class SeyonMagicCommand extends AbstractAsyncCommand {
         ));
         
         context.sendMessage(Message.join(
+            Message.raw("  /seyon-magic give ").color(Color.GRAY),
+            Message.raw("- Give magic item").color(Color.WHITE)
+        ));
+        
+        context.sendMessage(Message.join(
             Message.raw("  /seyon-magic help ").color(Color.GRAY),
             Message.raw("- Show this help").color(Color.WHITE)
         ));
+        
+        return CompletableFuture.completedFuture(null);
+    }
+
+    /**
+     * Handle give subcommand
+     */
+    private CompletableFuture<Void> handleGive(CommandContext context, CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            context.sendMessage(Message.join(
+                Message.raw("[Arcane Arts] ").color(Color.ORANGE),
+                Message.raw("This command can only be used by players.").color(Color.RED)
+            ));
+            return CompletableFuture.completedFuture(null);
+        }
+        
+        Ref<EntityStore> ref = player.getReference();
+        if (ref == null || !ref.isValid()) {
+            context.sendMessage(Message.raw("You must be in a world to use this command."));
+            return CompletableFuture.completedFuture(null);
+        }
+        
+        // Get arguments
+        String itemType = itemTypeArg.get(context);
+        String quality = qualityArg.get(context);
+        
+        if (itemType == null || itemType.isEmpty()) {
+            context.sendMessage(Message.join(
+                Message.raw("[Arcane Arts] ").color(Color.ORANGE),
+                Message.raw("Usage: /seyon-magic give --itemType=<wand|grimoire> --quality=<quality>").color(Color.RED)
+            ));
+            context.sendMessage(Message.raw("Example: /seyon-magic give --itemType=wand --quality=legendary"));
+            context.sendMessage(Message.raw("Qualities: common, uncommon, rare, epic, legendary"));
+            return CompletableFuture.completedFuture(null);
+        }
+        
+        itemType = itemType.toLowerCase();
+        quality = (quality == null || quality.isEmpty()) ? "common" : quality.toLowerCase();
+        
+        // Debug log to see what we received
+        SeyonMagicPlugin.getInstance().getLogger()
+            .at(java.util.logging.Level.INFO)
+            .log("Give command - itemType: " + itemType + ", quality: " + quality);
+        
+        // Create item
+        com.hypixel.hytale.server.core.inventory.ItemStack itemStack;
+        try {
+            if ("wand".equals(itemType)) {
+                itemStack = SeyonMagicPlugin.getInstance().getItemService().createWand(quality);
+            } else if ("grimoire".equals(itemType)) {
+                itemStack = SeyonMagicPlugin.getInstance().getItemService().createGrimoire(quality);
+            } else {
+                context.sendMessage(Message.join(
+                    Message.raw("[Arcane Arts] ").color(Color.ORANGE),
+                    Message.raw("Unknown item type: " + itemType).color(Color.RED)
+                ));
+                context.sendMessage(Message.raw("Valid types: wand, grimoire"));
+                return CompletableFuture.completedFuture(null);
+            }
+            
+            // Add to player inventory
+            var transaction = player.getInventory().getCombinedHotbarFirst().addItemStack(itemStack);
+            var remainder = transaction.getRemainder();
+            
+            if (remainder != null && !remainder.isEmpty()) {
+                context.sendMessage(Message.join(
+                    Message.raw("[Arcane Arts] ").color(Color.ORANGE),
+                    Message.raw("Insufficient inventory space!").color(Color.RED)
+                ));
+            } else {
+                context.sendMessage(Message.join(
+                    Message.raw("[Arcane Arts] ").color(Color.ORANGE),
+                    Message.raw("Gave you a ").color(Color.GREEN),
+                    Message.raw(quality + " " + itemType).color(Color.YELLOW),
+                    Message.raw("!").color(Color.GREEN)
+                ));
+            }
+            
+        } catch (Exception e) {
+            context.sendMessage(Message.join(
+                Message.raw("[Arcane Arts] ").color(Color.ORANGE),
+                Message.raw("Error creating item: " + e.getMessage()).color(Color.RED)
+            ));
+            SeyonMagicPlugin.getInstance().getLogger()
+                .at(java.util.logging.Level.SEVERE)
+                .withCause(e)
+                .log("Failed to create magic item");
+        }
         
         return CompletableFuture.completedFuture(null);
     }

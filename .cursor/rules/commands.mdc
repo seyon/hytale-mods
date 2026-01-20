@@ -1,6 +1,6 @@
 ---
 description: Information about the implementation of commands
-alwaysApply: false
+alwaysApply: true
 ---
 # Overview
 

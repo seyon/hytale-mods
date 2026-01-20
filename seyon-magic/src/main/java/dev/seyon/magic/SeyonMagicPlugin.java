@@ -46,7 +46,7 @@ public class SeyonMagicPlugin extends JavaPlugin {
 
         // Initialize services
         this.configService = new MagicConfigService(this.getLogger());
-        this.itemService = new MagicItemService(this.getLogger());
+        this.itemService = new MagicItemService(this.getLogger(), this.configService);
         this.spellService = new SpellService(this.getLogger());
 
         // Load configuration
