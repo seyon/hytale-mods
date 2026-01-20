@@ -1,0 +1,30 @@
+$C = "../../Common.ui";
+
+Group {
+  LayoutMode: Left;
+  Anchor: (Bottom: 8, Width: 660);
+  Background: #1a1a1a;
+  Padding: (Left: 12, Right: 12, Top: 12, Bottom: 12);
+
+  Group {
+    FlexWeight: 1;
+    LayoutMode: Top;
+
+    Label #TranslationKeyLabel {
+      Anchor: (Bottom: 4);
+      Style: (
+        FontSize: 11,
+        TextColor: #ffaa00,
+        RenderBold: true
+      );
+    }
+
+    $C.@TextField #TranslationValueField {
+      Anchor: (Height: 32);
+      Style: (
+        FontSize: 14,
+        TextColor: #ffffff(0.9)
+      );
+    }
+  }
+}

@@ -1,0 +1,5 @@
+rootProject.name = 'hytale-mods'
+
+// Include all sub-projects
+include 'seyon-motd'
+include 'seyon-magic'

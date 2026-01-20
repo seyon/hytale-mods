@@ -1,0 +1,19 @@
+{
+  "Group": "Seyon",
+  "Name": "SeyonMotd",
+  "Version": "1.0.0",
+  "Description": "Configurable MOTD plugin with GUI for message management",
+  "Authors": [
+    {
+      "Name": "Christian Wielath"
+    }
+  ],
+  "Website": "https://seyon.de",
+  "Repository": "https://github.com/seyon/hytale-mods/seyon-motd",
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "DisabledByDefault": false,
+  "Main": "dev.seyon.motd.SeyonMotdPlugin",
+  "IncludesAssetPack": true
+}

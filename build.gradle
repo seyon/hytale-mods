@@ -1,0 +1,26 @@
+// Root build file for all Hytale mods
+
+plugins {
+    id 'base'
+}
+
+// Common configuration for all subprojects
+subprojects {
+    apply plugin: 'java'
+
+    group = 'dev.seyon'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.named('jar') {
+        destinationDirectory = rootProject.layout.projectDirectory.dir("release")
+    }
+}

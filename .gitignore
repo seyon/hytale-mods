@@ -39,3 +39,4 @@ ehthumbs.db
 # Project-specific
 **/run/
 /release/
+/dependency/

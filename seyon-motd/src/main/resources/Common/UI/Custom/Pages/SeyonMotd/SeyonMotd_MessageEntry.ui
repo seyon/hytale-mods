@@ -1,0 +1,79 @@
+$C = "../../Common.ui";
+
+@RemoveButtonStyle = TextButtonStyle(
+  Default: (Background: #e74c3c, LabelStyle: $C.@DefaultButtonLabelStyle),
+  Hovered: (Background: #f75c4c, LabelStyle: $C.@DefaultButtonLabelStyle),
+  Pressed: (Background: #d73c2c, LabelStyle: $C.@DefaultButtonLabelStyle),
+  Sounds: $C.@ButtonSounds,
+);
+
+Group {
+  LayoutMode: Left;
+  Anchor: (Bottom: 8, Width: 660);
+  Background: #1a1a1a;
+  Padding: (Left: 12, Right: 12, Top: 12, Bottom: 12);
+
+  Group {
+    FlexWeight: 3;
+    LayoutMode: Top;
+    Anchor: (Right: 10);
+
+    Label {
+      Anchor: (Bottom: 4);
+      Style: (
+        FontSize: 12,
+        TextColor: #4a90e2,
+        RenderBold: true
+      );
+      Text: "Message Text";
+    }
+
+    $C.@TextField #MessageTextField {
+      Anchor: (Height: 32);
+      Style: (
+        FontSize: 14,
+        TextColor: #ffffff(0.9)
+      );
+    }
+  }
+
+  Group {
+    FlexWeight: 1;
+    LayoutMode: Top;
+    Anchor: (Right: 10);
+
+    Label {
+      Anchor: (Bottom: 4);
+      Style: (
+        FontSize: 12,
+        TextColor: #4a90e2,
+        RenderBold: true
+      );
+      Text: "Color (Hex)";
+    }
+
+    $C.@TextField #ColorTextField {
+      Anchor: (Height: 32);
+      Style: (
+        FontSize: 14,
+        TextColor: #ffffff(0.9)
+      );
+    }
+  }
+
+  Group {
+    LayoutMode: Top;
+
+    Label {
+      Anchor: (Height: 16);
+      Text: "";
+    }
+
+    $C.@TextButton #RemoveMessageButton {
+      Anchor: (Width: 40, Height: 32);
+      Padding: (Left: 8, Right: 8, Top: 4, Bottom: 4);
+      Text: "X";
+      Style: @RemoveButtonStyle;
+    }
+  }
+}

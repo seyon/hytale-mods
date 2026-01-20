@@ -1,0 +1,19 @@
+{
+  "Group": "Seyon",
+  "Name": "SeyonMagic",
+  "Version": "1.0.0",
+  "Description": "Arcane Arts - A comprehensive magic system for Hytale with wands, grimoires, spells and modifiers",
+  "Authors": [
+    {
+      "Name": "Christian Wielath"
+    }
+  ],
+  "Website": "https://seyon.de",
+  "Repository": "https://github.com/seyon/hytale-mods/seyon-magic",
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "DisabledByDefault": false,
+  "Main": "dev.seyon.magic.SeyonMagicPlugin",
+  "IncludesAssetPack": true
+}

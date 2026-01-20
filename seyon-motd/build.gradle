@@ -1,0 +1,7 @@
+// Project-specific configuration for SeyonMotd
+version = '1.0.0'
+
+dependencies {
+    compileOnly files('../dependency/HytaleServer.jar')
+}
+
