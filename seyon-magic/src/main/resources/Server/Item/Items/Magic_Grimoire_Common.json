@@ -1,0 +1,15 @@
+{
+  "Id": "Magic_Grimoire_Common",
+  "TranslationProperties": {
+    "Name": "Common Grimoire",
+    "Description": "A simple spellbook containing basic magical knowledge"
+  },
+  "Icon": "Icons/ItemsGenerated/common_book_icon.png",
+  "Model": "Items/Common/Book.blockymodel",
+  "Texture": "Items/Common/book.png",
+  "Quality": "Common",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Magic.Grimoires"
+  ]
+}

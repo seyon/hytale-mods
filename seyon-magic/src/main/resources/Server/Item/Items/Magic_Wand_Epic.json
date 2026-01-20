@@ -1,0 +1,15 @@
+{
+  "Id": "Magic_Wand_Epic",
+  "TranslationProperties": {
+    "Name": "Epic Magic Wand",
+    "Description": "An exceptional wand crackling with arcane energy"
+  },
+  "Icon": "Icons/ItemsGenerated/common_stick_icon.png",
+  "Model": "Items/Common/Stick.blockymodel",
+  "Texture": "Items/Common/stick.png",
+  "Quality": "Epic",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Magic.Wands"
+  ]
+}

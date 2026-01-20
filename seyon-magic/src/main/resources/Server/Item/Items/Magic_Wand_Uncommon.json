@@ -1,0 +1,15 @@
+{
+  "Id": "Magic_Wand_Uncommon",
+  "TranslationProperties": {
+    "Name": "Uncommon Magic Wand",
+    "Description": "An improved wand with enhanced magical properties"
+  },
+  "Icon": "Icons/ItemsGenerated/common_stick_icon.png",
+  "Model": "Items/Common/Stick.blockymodel",
+  "Texture": "Items/Common/stick.png",
+  "Quality": "Uncommon",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Magic.Wands"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "Id": "Magic_Grimoire_Epic",
+  "TranslationProperties": {
+    "Name": "Epic Grimoire",
+    "Description": "A masterwork grimoire radiating immense magical power"
+  },
+  "Icon": "Icons/ItemsGenerated/common_book_icon.png",
+  "Model": "Items/Common/Book.blockymodel",
+  "Texture": "Items/Common/book.png",
+  "Quality": "Epic",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Magic.Grimoires"
+  ]
+}

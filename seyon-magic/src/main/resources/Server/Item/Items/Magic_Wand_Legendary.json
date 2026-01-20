@@ -1,0 +1,15 @@
+{
+  "Id": "Magic_Wand_Legendary",
+  "TranslationProperties": {
+    "Name": "Legendary Magic Wand",
+    "Description": "A wand of unparalleled power, legendary among mages"
+  },
+  "Icon": "Icons/ItemsGenerated/common_stick_icon.png",
+  "Model": "Items/Common/Stick.blockymodel",
+  "Texture": "Items/Common/stick.png",
+  "Quality": "Legendary",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Magic.Wands"
+  ]
+}

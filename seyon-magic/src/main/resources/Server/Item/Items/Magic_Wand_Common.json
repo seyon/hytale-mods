@@ -1,0 +1,15 @@
+{
+  "Id": "Magic_Wand_Common",
+  "TranslationProperties": {
+    "Name": "Common Magic Wand",
+    "Description": "A basic wand for casting simple spells"
+  },
+  "Icon": "Icons/ItemsGenerated/common_stick_icon.png",
+  "Model": "Items/Common/Stick.blockymodel",
+  "Texture": "Items/Common/stick.png",
+  "Quality": "Common",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Magic.Wands"
+  ]
+}

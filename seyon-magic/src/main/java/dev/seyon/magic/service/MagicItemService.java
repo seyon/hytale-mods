@@ -18,10 +18,6 @@ public class MagicItemService {
 
     private final HytaleLogger logger;
     private final MagicConfigService configService;
-    
-    // Base item IDs (using vanilla items for now - can be customized later)
-    private static final String WAND_BASE_ITEM = "Common_Grass"; // Placeholder
-    private static final String GRIMOIRE_BASE_ITEM = "Common_Grass"; // Placeholder
 
     public MagicItemService(HytaleLogger logger, MagicConfigService configService) {
         this.logger = logger;
@@ -40,7 +36,11 @@ public class MagicItemService {
         if (qualityConfig == null) {
             logger.at(Level.WARNING).log("Unknown quality: " + quality + ", using 'common'");
             qualityConfig = wandConfig.getQualities().get("common");
+            quality = "common";
         }
+        
+        // Build item ID based on quality: Magic_Wand_Common, Magic_Wand_Legendary, etc.
+        String itemId = "Magic_Wand_" + capitalizeFirst(quality.toLowerCase());
         
         // Create metadata with magic properties
         BsonDocument metadata = new BsonDocument();
@@ -54,7 +54,7 @@ public class MagicItemService {
         metadata.put("affinity_slots", new BsonInt32(qualityConfig.getAffinitySlots()));
         metadata.put("spell_slots", new BsonInt32(qualityConfig.getSpellSlots()));
         
-        return new ItemStack(WAND_BASE_ITEM, 1, metadata);
+        return new ItemStack(itemId, 1, metadata);
     }
 
     /**
@@ -69,7 +69,11 @@ public class MagicItemService {
         if (qualityConfig == null) {
             logger.at(Level.WARNING).log("Unknown quality: " + quality + ", using 'common'");
             qualityConfig = grimoireConfig.getQualities().get("common");
+            quality = "common";
         }
+        
+        // Build item ID based on quality: Magic_Grimoire_Common, Magic_Grimoire_Legendary, etc.
+        String itemId = "Magic_Grimoire_" + capitalizeFirst(quality.toLowerCase());
         
         // Create metadata with magic properties
         BsonDocument metadata = new BsonDocument();
@@ -83,7 +87,7 @@ public class MagicItemService {
         metadata.put("affinity_slots", new BsonInt32(qualityConfig.getAffinitySlots()));
         metadata.put("spell_slots", new BsonInt32(qualityConfig.getSpellSlots()));
         
-        return new ItemStack(GRIMOIRE_BASE_ITEM, 1, metadata);
+        return new ItemStack(itemId, 1, metadata);
     }
     
     /**
@@ -91,6 +95,14 @@ public class MagicItemService {
      */
     public boolean isWand(ItemStack item) {
         if (item == null || item.isEmpty()) return false;
+        
+        // Check by item ID prefix
+        String itemId = item.getItemId();
+        if (itemId != null && itemId.startsWith("Magic_Wand_")) {
+            return true;
+        }
+        
+        // Fallback: check metadata
         BsonDocument metadata = item.getMetadata();
         if (metadata == null) return false;
         return metadata.containsKey("magic_type") && 
@@ -102,9 +114,25 @@ public class MagicItemService {
      */
     public boolean isGrimoire(ItemStack item) {
         if (item == null || item.isEmpty()) return false;
+        
+        // Check by item ID prefix
+        String itemId = item.getItemId();
+        if (itemId != null && itemId.startsWith("Magic_Grimoire_")) {
+            return true;
+        }
+        
+        // Fallback: check metadata
         BsonDocument metadata = item.getMetadata();
         if (metadata == null) return false;
         return metadata.containsKey("magic_type") && 
                "grimoire".equals(metadata.getString("magic_type").getValue());
+    }
+    
+    /**
+     * Capitalize first letter of a string
+     */
+    private String capitalizeFirst(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 }

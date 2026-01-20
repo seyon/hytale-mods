@@ -1,0 +1,15 @@
+{
+  "Id": "Magic_Wand_Rare",
+  "TranslationProperties": {
+    "Name": "Rare Magic Wand",
+    "Description": "A powerful wand imbued with rare magical essence"
+  },
+  "Icon": "Icons/ItemsGenerated/common_stick_icon.png",
+  "Model": "Items/Common/Stick.blockymodel",
+  "Texture": "Items/Common/stick.png",
+  "Quality": "Rare",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Magic.Wands"
+  ]
+}

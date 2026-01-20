@@ -1,0 +1,15 @@
+{
+  "Id": "Magic_Grimoire_Legendary",
+  "TranslationProperties": {
+    "Name": "Legendary Grimoire",
+    "Description": "The ultimate compendium of arcane knowledge and forbidden spells"
+  },
+  "Icon": "Icons/ItemsGenerated/common_book_icon.png",
+  "Model": "Items/Common/Book.blockymodel",
+  "Texture": "Items/Common/book.png",
+  "Quality": "Legendary",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Magic.Grimoires"
+  ]
+}
