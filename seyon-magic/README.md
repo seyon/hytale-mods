@@ -8,6 +8,7 @@ Ein modulares, konfigurierbares Zaubersystem-Plugin für Hytale Server.
 - ✅ Gradle-Build-System konfiguriert
 - ✅ Plugin-Entry und Minimal-Logik implementiert
 - ✅ Service-Stubs für zukünftige Features vorbereitet
+- ✅ Konfigurations-System (main.json + Items) implementiert
 - ⏳ Item-System (Zauberstäbe, Grimoires) - TODO
 - ⏳ Zauber-System (Grundzauber, Modifikationen) - TODO
 - ⏳ Affinitäts-System - TODO
@@ -22,10 +23,14 @@ seyon-magic/
 │   │   ├── SeyonMagicPlugin.java          # Haupt-Plugin-Klasse
 │   │   ├── command/
 │   │   │   └── SeyonMagicCommand.java     # Test-Command
+│   │   ├── config/
+│   │   │   ├── MagicMainConfig.java       # Main-Config-Modell
+│   │   │   ├── MagicItemConfig.java       # Item-Config-Modell
+│   │   │   └── ItemQualityConfig.java     # Quality-Config-Modell
 │   │   ├── event/
 │   │   │   └── MagicEventHandler.java     # Event-Handler
 │   │   └── service/
-│   │       ├── MagicConfigService.java    # Konfigurations-Service (stub)
+│   │       ├── MagicConfigService.java    # Konfigurations-Service
 │   │       ├── MagicItemService.java      # Item-Service (stub)
 │   │       └── SpellService.java          # Zauber-Service (stub)
 │   └── resources/
@@ -59,6 +64,11 @@ Das kompilierte Plugin (JAR) wird in `build/libs/` erstellt.
 2. In den `mods/` Ordner deines Hytale Servers kopieren
 3. Server starten
 
+Beim ersten Start wird automatisch der Ordner `SeyonMagic/config/` angelegt mit Default-Konfigurationen:
+- `main.json` - Haupt-Konfiguration (global settings, balance, features)
+- `items/wands.json` - Zauberstab-Konfiguration
+- `items/grimoires.json` - Grimoire-Konfiguration
+
 ## 🎮 Verwendung
 
 ### Commands
@@ -69,6 +79,24 @@ Das kompilierte Plugin (JAR) wird in `build/libs/` erstellt.
 ### Events
 
 - **PlayerReadyEvent**: Sendet Willkommensnachricht an Spieler nach 3 Sekunden
+
+### Konfiguration
+
+Das Plugin legt beim ersten Start Konfigurationsdateien im Ordner `SeyonMagic/config/` an:
+
+- **main.json**: Globale Einstellungen
+  - `global_settings`: Mana-Regeneration, Cooldowns, max. aktive Zauber
+  - `balance_multipliers`: Balance-Faktoren für Damage, Mana-Kosten, etc.
+  - `features`: Aktivierte Features (Spell-Crafting, Quality-System, etc.)
+
+- **items/wands.json**: Zauberstab-Konfiguration
+  - Qualitäts-Stufen (Common, Uncommon, Rare, Epic, Legendary)
+  - Stats pro Quality (Mana, Power, Speed, Modifier-Slots, etc.)
+
+- **items/grimoires.json**: Grimoire-Konfiguration
+  - Analog zu Wands, aber für Grimoires
+
+Siehe [CONFIG.md](docs/CONFIG.md) für detaillierte Beschreibung aller Konfigurations-Optionen.
 
 ## 🏗️ Architektur
 
