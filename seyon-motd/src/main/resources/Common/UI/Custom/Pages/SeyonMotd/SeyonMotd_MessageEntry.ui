@@ -1,10 +1,9 @@
-$C = "../../Common.ui";
+// No includes - Common.ui is not resolvable from plugin asset pack.
 
 @RemoveButtonStyle = TextButtonStyle(
-  Default: (Background: #e74c3c, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Hovered: (Background: #f75c4c, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Pressed: (Background: #d73c2c, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Sounds: $C.@ButtonSounds,
+  Default: (Background: #e74c3c, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+  Hovered: (Background: #f75c4c, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+  Pressed: (Background: #d73c2c, LabelStyle: (FontSize: 14, TextColor: #ffffff))
 );
 
 Group {
@@ -20,20 +19,13 @@ Group {
 
     Label {
       Anchor: (Bottom: 4);
-      Style: (
-        FontSize: 12,
-        TextColor: #4a90e2,
-        RenderBold: true
-      );
+      Style: (FontSize: 12, TextColor: #4a90e2, RenderBold: true);
       Text: "Message Text";
     }
 
-    $C.@TextField #MessageTextField {
+    TextField #MessageTextField {
       Anchor: (Height: 32);
-      Style: (
-        FontSize: 14,
-        TextColor: #ffffff(0.9)
-      );
+      Style: (FontSize: 14, TextColor: #ffffff(0.9));
     }
   }
 
@@ -44,20 +36,13 @@ Group {
 
     Label {
       Anchor: (Bottom: 4);
-      Style: (
-        FontSize: 12,
-        TextColor: #4a90e2,
-        RenderBold: true
-      );
+      Style: (FontSize: 12, TextColor: #4a90e2, RenderBold: true);
       Text: "Color (Hex)";
     }
 
-    $C.@TextField #ColorTextField {
+    TextField #ColorTextField {
       Anchor: (Height: 32);
-      Style: (
-        FontSize: 14,
-        TextColor: #ffffff(0.9)
-      );
+      Style: (FontSize: 14, TextColor: #ffffff(0.9));
     }
   }
 
@@ -69,7 +54,7 @@ Group {
       Text: "";
     }
 
-    $C.@TextButton #RemoveMessageButton {
+    TextButton #RemoveMessageButton {
       Anchor: (Width: 40, Height: 32);
       Padding: (Left: 8, Right: 8, Top: 4, Bottom: 4);
       Text: "X";

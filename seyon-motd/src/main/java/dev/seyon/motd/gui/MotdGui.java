@@ -8,6 +8,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.protocol.packets.interface_.Page;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
@@ -80,7 +81,8 @@ public class MotdGui extends InteractiveCustomUIPage<MotdGui.GuiData> {
         
         // Test MOTD button
         uiEventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#TestMotdButton", EventData.of("Button", "TestMotd"));
-        
+        uiEventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#BackButton", EventData.of("Button", "Back"));
+
         // Build tab content based on current tab
         this.buildTabContent(ref, uiCommandBuilder, uiEventBuilder, store);
     }
@@ -265,6 +267,13 @@ public class MotdGui extends InteractiveCustomUIPage<MotdGui.GuiData> {
         // Handle button clicks
         if (data.button != null) {
             switch (data.button) {
+                case "Back": {
+                    Player p = store.getComponent(ref, Player.getComponentType());
+                    if (p != null) {
+                        p.getPageManager().setPage(ref, store, Page.None);
+                    }
+                    return;
+                }
                 case "AddMessage":
                     if (messageEntries.size() < 10) {
                         messageEntries.add(new MessageEntry("New Message", "#FFFFFF"));

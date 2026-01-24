@@ -6,6 +6,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.seyon.leveling.api.LevelSystemAPI;
 import dev.seyon.leveling.api.LevelSystemAPIImpl;
 import dev.seyon.leveling.command.LevelSystemCommand;
+import dev.seyon.leveling.event.BreakBlockExpSystem;
 import dev.seyon.leveling.event.LevelSystemEventHandler;
 import dev.seyon.leveling.service.*;
 
@@ -85,7 +86,10 @@ public class SeyonLevelSystemPlugin extends JavaPlugin {
             event -> LevelSystemEventHandler.onPlayerReady(event, this)
         );
 
-        // Try to integrate with SeyonMagic if installed
+        // Register BreakBlock -> EXP system (action IDs: break_<blockType.getId()>)
+        this.getEntityStoreRegistry().registerSystem(new BreakBlockExpSystem(this));
+
+        // Try to integrate with Seyon Arcane Arts if installed
         try {
             dev.seyon.leveling.integration.MagicIntegration.integrate();
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-$C = "../../Common.ui";
+// No includes - Common.ui is not resolvable from plugin asset pack.
 
 Group {
   LayoutMode: Left;
@@ -12,19 +12,12 @@ Group {
 
     Label #TranslationKeyLabel {
       Anchor: (Bottom: 4);
-      Style: (
-        FontSize: 11,
-        TextColor: #ffaa00,
-        RenderBold: true
-      );
+      Style: (FontSize: 11, TextColor: #ffaa00, RenderBold: true);
     }
 
-    $C.@TextField #TranslationValueField {
+    TextField #TranslationValueField {
       Anchor: (Height: 32);
-      Style: (
-        FontSize: 14,
-        TextColor: #ffffff(0.9)
-      );
+      Style: (FontSize: 14, TextColor: #ffffff(0.9));
     }
   }
 }

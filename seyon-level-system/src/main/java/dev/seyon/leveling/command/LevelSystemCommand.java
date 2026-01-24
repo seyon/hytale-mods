@@ -2,6 +2,7 @@ package dev.seyon.leveling.command;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
@@ -10,15 +11,20 @@ import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.seyon.leveling.SeyonLevelSystemPlugin;
 import dev.seyon.leveling.config.LevelSystemCategory;
+import dev.seyon.leveling.gui.LevelSystemMainGui;
 import dev.seyon.leveling.model.CategoryProgress;
 import dev.seyon.leveling.model.PlayerLevelSystemData;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import java.awt.Color;
 import java.util.concurrent.CompletableFuture;
+
+import static com.hypixel.hytale.server.core.command.commands.player.inventory.InventorySeeCommand.MESSAGE_COMMANDS_ERRORS_PLAYER_NOT_IN_WORLD;
 
 /**
  * Main command for Level System
@@ -61,24 +67,35 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
     }
 
     /**
-     * Open GUI
+     * Open Level System GUI (same pattern as seyon-motd)
      */
     private CompletableFuture<Void> handleGui(CommandContext context, CommandSender sender) {
         if (!(sender instanceof Player player)) {
             context.sendMessage(Message.raw("This command can only be used by players.").color(Color.RED));
             return CompletableFuture.completedFuture(null);
         }
-        
-        // TODO: Implement GUI opening once Hytale Page API is available
-        // Current API doesn't have the required methods for custom UI pages
-        player.sendMessage(Message.join(
-            Message.raw("[Level System] ").color(Color.ORANGE),
-            Message.raw("GUI coming soon! Use ").color(Color.GRAY),
-            Message.raw("/leveling stats").color(Color.CYAN),
-            Message.raw(" in the meantime.").color(Color.GRAY)
-        ));
-        
-        return CompletableFuture.completedFuture(null);
+
+        player.getWorldMapTracker().tick(0);
+        Ref<EntityStore> ref = player.getReference();
+
+        if (ref == null || !ref.isValid()) {
+            context.sendMessage(MESSAGE_COMMANDS_ERRORS_PLAYER_NOT_IN_WORLD);
+            return CompletableFuture.completedFuture(null);
+        }
+
+        Store<EntityStore> store = ref.getStore();
+        World world = store.getExternalData().getWorld();
+
+        return CompletableFuture.runAsync(() -> {
+            PlayerRef playerRefComponent = store.getComponent(ref, PlayerRef.getComponentType());
+            if (playerRefComponent != null) {
+                player.getPageManager().openCustomPage(
+                        ref,
+                        store,
+                        new LevelSystemMainGui(playerRefComponent, CustomPageLifetime.CanDismiss)
+                );
+            }
+        }, world);
     }
 
     /**

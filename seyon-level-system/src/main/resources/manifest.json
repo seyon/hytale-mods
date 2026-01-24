@@ -17,5 +17,5 @@
   },
   "DisabledByDefault": false,
   "Main": "dev.seyon.leveling.SeyonLevelSystemPlugin",
-  "IncludesAssetPack": false
+  "IncludesAssetPack": true
 }

@@ -1,63 +1,66 @@
-$C = "../../Common.ui";
+// No includes - Common.ui is not resolvable from plugin asset pack.
 
 @TabButtonStyle = TextButtonStyle(
-  Default: (Background: #2a2a2a, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Hovered: (Background: #3a3a3a, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Pressed: (Background: #4a4a4a, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Sounds: $C.@ButtonSounds,
+  Default: (Background: #2a2a2a, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+  Hovered: (Background: #3a3a3a, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+  Pressed: (Background: #4a4a4a, LabelStyle: (FontSize: 14, TextColor: #ffffff))
 );
 
 @ActiveTabButtonStyle = TextButtonStyle(
-  Default: (Background: #4a90e2, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Hovered: (Background: #5aa0f2, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Pressed: (Background: #6ab0ff, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Sounds: $C.@ButtonSounds,
+  Default: (Background: #4a90e2, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+  Hovered: (Background: #5aa0f2, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+  Pressed: (Background: #6ab0ff, LabelStyle: (FontSize: 14, TextColor: #ffffff))
 );
 
 @ActionButtonStyle = TextButtonStyle(
-  Default: (Background: #4a90e2, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Hovered: (Background: #5aa0f2, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Pressed: (Background: #3a80d2, LabelStyle: $C.@DefaultButtonLabelStyle),
-  Sounds: $C.@ButtonSounds,
+  Default: (Background: #4a90e2, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+  Hovered: (Background: #5aa0f2, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+  Pressed: (Background: #3a80d2, LabelStyle: (FontSize: 14, TextColor: #ffffff))
 );
 
-$C.@PageOverlay {
-  $C.@Container {
-    Anchor: (Width: 900, Height: 650);
+Group {
+  LayoutMode: Center;
+  Anchor: (Full: 0);
+  Background: #000000(0.6);
 
-    #Title {
-      Group {
-        $C.@Title {
-          @Text = "MOTD Configuration";
-        }
+  Group {
+    Anchor: (Width: 900, Height: 650);
+    Background: #252525;
+    LayoutMode: Top;
+
+    Group #Title {
+      LayoutMode: Top;
+      Padding: (Left: 20, Right: 20, Top: 15, Bottom: 10);
+      Label {
+        Style: (FontSize: 24, TextColor: #4a90e2, RenderBold: true);
+        Text: "MOTD Configuration";
       }
     }
 
-    #Content {
+    Group #Content {
       LayoutMode: Left;
 
-      // Left Sidebar - Tab Navigation
       Group #Sidebar {
         Anchor: (Width: 200);
         LayoutMode: Top;
         Background: #1a1a1a;
         Padding: (Left: 10, Right: 10, Top: 15, Bottom: 15);
 
-        $C.@TextButton #MessagesTab {
+        TextButton #MessagesTab {
           Anchor: (Height: 40, Bottom: 8);
           Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
           Text: "Messages";
           Style: @TabButtonStyle;
         }
 
-        $C.@TextButton #SettingsTab {
+        TextButton #SettingsTab {
           Anchor: (Height: 40, Bottom: 8);
           Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
           Text: "Settings";
           Style: @TabButtonStyle;
         }
 
-        $C.@TextButton #TranslationsTab {
+        TextButton #TranslationsTab {
           Anchor: (Height: 40, Bottom: 8);
           Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
           Text: "Translations";
@@ -68,8 +71,7 @@ $C.@PageOverlay {
           FlexWeight: 1;
         }
 
-        // Test Button at bottom
-        $C.@TextButton #TestMotdButton {
+        TextButton #TestMotdButton {
           Anchor: (Height: 40);
           Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
           Text: "TEST MOTD";
@@ -77,14 +79,12 @@ $C.@PageOverlay {
         }
       }
 
-      // Right Content Area
       Group #MainContent {
         FlexWeight: 1;
         LayoutMode: Top;
         Background: #252525;
         Padding: (Left: 20, Right: 20, Top: 15, Bottom: 15);
 
-        // Messages Tab Content
         Group #MessagesTabContent {
           LayoutMode: Top;
           FlexWeight: 1;
@@ -93,14 +93,10 @@ $C.@PageOverlay {
           Group {
             LayoutMode: Left;
             Anchor: (Bottom: 10);
-            
+
             Label {
               Anchor: ();
-              Style: (
-                FontSize: 20,
-                TextColor: #4a90e2,
-                RenderBold: true
-              );
+              Style: (FontSize: 20, TextColor: #4a90e2, RenderBold: true);
               Text: "MOTD Messages";
             }
 
@@ -108,14 +104,14 @@ $C.@PageOverlay {
               FlexWeight: 1;
             }
 
-            $C.@TextButton #AddMessageButton {
+            TextButton #AddMessageButton {
               Anchor: (Height: 32, Right: 10);
               Padding: (Left: 16, Right: 16, Top: 6, Bottom: 6);
               Text: "ADD";
               Style: @ActionButtonStyle;
             }
 
-            $C.@TextButton #SaveMessagesButton {
+            TextButton #SaveMessagesButton {
               Anchor: (Height: 32);
               Padding: (Left: 20, Right: 20, Top: 6, Bottom: 6);
               Text: "SAVE";
@@ -128,7 +124,6 @@ $C.@PageOverlay {
             FlexWeight: 1;
             LayoutMode: TopScrolling;
             Padding: (Left: 4);
-            ScrollbarStyle: $C.@DefaultScrollbarStyle;
 
             Group #MessagesCards {
               LayoutMode: Top;
@@ -136,7 +131,6 @@ $C.@PageOverlay {
           }
         }
 
-        // Settings Tab Content
         Group #SettingsTabContent {
           LayoutMode: Top;
           FlexWeight: 1;
@@ -144,11 +138,7 @@ $C.@PageOverlay {
 
           Label {
             Anchor: (Bottom: 15);
-            Style: (
-              FontSize: 20,
-              TextColor: #4a90e2,
-              RenderBold: true
-            );
+            Style: (FontSize: 20, TextColor: #4a90e2, RenderBold: true);
             Text: "Display Settings";
           }
 
@@ -161,17 +151,14 @@ $C.@PageOverlay {
             Group {
               LayoutMode: Left;
               Anchor: (Bottom: 12);
-              
-              $C.@CheckBox #ShowInChatCheckbox {
+
+              CheckBox #ShowInChatCheckbox {
                 Anchor: (Width: 24, Height: 24, Right: 8);
               }
-              
+
               Label {
                 Anchor: ();
-                Style: (
-                  FontSize: 14,
-                  TextColor: #ffffff(0.9)
-                );
+                Style: (FontSize: 14, TextColor: #ffffff(0.9));
                 Text: "Show in Chat";
               }
             }
@@ -179,17 +166,14 @@ $C.@PageOverlay {
             Group {
               LayoutMode: Left;
               Anchor: (Bottom: 12);
-              
-              $C.@CheckBox #ShowAsNotificationCheckbox {
+
+              CheckBox #ShowAsNotificationCheckbox {
                 Anchor: (Width: 24, Height: 24, Right: 8);
               }
-              
+
               Label {
                 Anchor: ();
-                Style: (
-                  FontSize: 14,
-                  TextColor: #ffffff(0.9)
-                );
+                Style: (FontSize: 14, TextColor: #ffffff(0.9));
                 Text: "Show as Notification";
               }
             }
@@ -197,30 +181,24 @@ $C.@PageOverlay {
             Group {
               LayoutMode: Top;
               Anchor: (Bottom: 0);
-              
+
               Label {
                 Anchor: (Bottom: 6);
-                Style: (
-                  FontSize: 14,
-                  TextColor: #ffffff(0.9)
-                );
+                Style: (FontSize: 14, TextColor: #ffffff(0.9));
                 Text: "Show Plugin List after MOTD (seconds, -1 = disabled):";
               }
-              
+
               Group {
                 LayoutMode: Left;
                 Anchor: ();
-                
-                $C.@TextField #PluginListDelayField {
+
+                TextField #PluginListDelayField {
                   Anchor: (Width: 100, Height: 30, Right: 8);
                 }
-                
+
                 Label {
                   Anchor: ();
-                  Style: (
-                    FontSize: 12,
-                    TextColor: #888888
-                  );
+                  Style: (FontSize: 12, TextColor: #888888);
                   Text: "(Default: -1 = disabled, Max: 60s)";
                 }
               }
@@ -239,7 +217,7 @@ $C.@PageOverlay {
               FlexWeight: 1;
             }
 
-            $C.@TextButton #SaveSettingsButton {
+            TextButton #SaveSettingsButton {
               Anchor: (Height: 36);
               Padding: (Left: 24, Right: 24, Top: 8, Bottom: 8);
               Text: "SAVE SETTINGS";
@@ -248,7 +226,6 @@ $C.@PageOverlay {
           }
         }
 
-        // Translations Tab Content
         Group #TranslationsTabContent {
           LayoutMode: Top;
           FlexWeight: 1;
@@ -257,14 +234,10 @@ $C.@PageOverlay {
           Group {
             LayoutMode: Left;
             Anchor: (Bottom: 10);
-            
+
             Label {
               Anchor: ();
-              Style: (
-                FontSize: 20,
-                TextColor: #4a90e2,
-                RenderBold: true
-              );
+              Style: (FontSize: 20, TextColor: #4a90e2, RenderBold: true);
               Text: "Translations";
             }
 
@@ -272,7 +245,7 @@ $C.@PageOverlay {
               FlexWeight: 1;
             }
 
-            $C.@TextButton #SaveTranslationsButton {
+            TextButton #SaveTranslationsButton {
               Anchor: (Height: 32);
               Padding: (Left: 20, Right: 20, Top: 6, Bottom: 6);
               Text: "SAVE";
@@ -282,10 +255,7 @@ $C.@PageOverlay {
 
           Label {
             Anchor: (Bottom: 5);
-            Style: (
-              FontSize: 12,
-              TextColor: #888888
-            );
+            Style: (FontSize: 12, TextColor: #888888);
             Text: "Customize chat and notification texts";
           }
 
@@ -294,7 +264,6 @@ $C.@PageOverlay {
             FlexWeight: 1;
             LayoutMode: TopScrolling;
             Padding: (Left: 4);
-            ScrollbarStyle: $C.@DefaultScrollbarStyle;
 
             Group #TranslationsCards {
               LayoutMode: Top;
@@ -304,6 +273,15 @@ $C.@PageOverlay {
       }
     }
   }
-}
 
-$C.@BackButton {}
+  TextButton #BackButton {
+    Anchor: (Top: 10, Right: 10);
+    Padding: (Left: 10, Right: 10, Top: 6, Bottom: 6);
+    Text: "X";
+    Style: TextButtonStyle(
+      Default: (Background: #3a3a3a, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+      Hovered: (Background: #4a4a4a, LabelStyle: (FontSize: 14, TextColor: #ffffff)),
+      Pressed: (Background: #2a2a2a, LabelStyle: (FontSize: 14, TextColor: #ffffff))
+    );
+  }
+}
