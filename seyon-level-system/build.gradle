@@ -1,0 +1,9 @@
+// Project-specific configuration for SeyonLevelSystem
+version = '1.0.0'
+
+dependencies {
+    compileOnly files('../dependency/HytaleServer.jar')
+    
+    // Seyon Utils
+    implementation project(':seyon-utils')
+}

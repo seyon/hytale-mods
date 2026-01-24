@@ -6,8 +6,10 @@ Sammlung von Hytale Server Plugins/Mods entwickelt von Seyon.
 
 | Projekt | Beschreibung | Status |
 |---------|-------------|--------|
+| [seyon-utils](./seyon-utils) | Zentrale Utility-Bibliothek für alle Mods | ✅ Funktional |
 | [seyon-motd](./seyon-motd) | Configurable MOTD plugin with GUI | ✅ Funktional |
-| [seyon-magic](./seyon-magic) | Arcane Arts - Umfangreiches Zaubersystem | 🚧 In Entwicklung |
+| [seyon-arcane-arts](./seyon-arcane-arts) | Umfangreiches Zaubersystem | 🚧 In Entwicklung |
+| [seyon-level-system](./seyon-level-system) | Erweiterbares Level-System mit Kategorien | 🚧 In Entwicklung |
 
 ## 🔧 Build & Development
 
@@ -26,8 +28,10 @@ Alle Projekte mit einem Command bauen:
 gradlew.bat build
 
 # Nur ein spezifisches Projekt bauen
+gradlew.bat :seyon-utils:build
 gradlew.bat :seyon-motd:build
-gradlew.bat :seyon-magic:build
+gradlew.bat :seyon-arcane-arts:build
+gradlew.bat :seyon-level-system:build
 
 # Alle Tests ausführen
 gradlew.bat test
@@ -60,11 +64,20 @@ gradlew.bat :seyon-motd:tasks
 hytale-mods/
 ├── dependency/                    # Gemeinsame Abhängigkeiten
 │   └── HytaleServer.jar          # Hytale Server API
+├── seyon-utils/                  # ⭐ Zentrale Utilities
+│   ├── src/
+│   ├── build.gradle
+│   └── README.md
 ├── seyon-motd/                   # MOTD Plugin
 │   ├── src/
 │   ├── build.gradle
 │   └── README.md
-├── seyon-magic/                  # Magic System Plugin
+├── seyon-arcane-arts/            # Magic System Plugin
+│   ├── docs/                     # Detaillierte Dokumentation
+│   ├── src/
+│   ├── build.gradle
+│   └── README.md
+├── seyon-level-system/           # Leveling System Plugin
 │   ├── docs/                     # Detaillierte Dokumentation
 │   ├── src/
 │   ├── build.gradle
@@ -72,6 +85,7 @@ hytale-mods/
 ├── build.gradle                  # Root Build-Konfiguration
 ├── settings.gradle               # Multi-Projekt-Setup
 ├── gradle.properties             # Gemeinsame Properties
+├── AGENTS.md                     # ⭐ Wichtige Hinweise für AI/LLMs
 └── gradlew.bat                   # Gradle Wrapper (Windows)
 ```
 
@@ -90,6 +104,7 @@ hytale-mods/
 - ✅ Einfaches Updaten von HytaleServer.jar
 - ✅ Konsistente Java/Gradle-Versionen
 - ✅ Ein Command baut alle Projekte
+- ✅ Gemeinsame Utilities in `seyon-utils` reduzieren Code-Duplikation
 
 ## 📝 Neue Projekte hinzufügen
 

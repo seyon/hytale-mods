@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'dev.seyon'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    // Hytale API - using local jar like other mods
+    compileOnly files('../dependency/HytaleServer.jar')
+}
+
+// SeyonUtils - Common utilities for Seyon mods

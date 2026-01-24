@@ -17,7 +17,7 @@ Ein modulares, konfigurierbares Zaubersystem-Plugin für Hytale Server.
 ## 📁 Projekt-Struktur
 
 ```
-seyon-magic/
+seyon-arcane-arts/
 ├── src/main/
 │   ├── java/dev/seyon/magic/
 │   │   ├── SeyonMagicPlugin.java          # Haupt-Plugin-Klasse
