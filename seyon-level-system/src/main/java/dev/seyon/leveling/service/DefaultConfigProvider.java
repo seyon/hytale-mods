@@ -52,6 +52,7 @@ public class DefaultConfigProvider {
         category.setDisplayName("Miner");
         category.setDescription("Mine ores and gather resources from the depths");
         category.setIcon("Server/Item/Icons/Mining.png");
+        category.setNotificationIcon("Ore_Iron_Stone");
         
         // EXP Curve
         ExpCurveConfig expCurve = new ExpCurveConfig();
@@ -205,6 +206,7 @@ public class DefaultConfigProvider {
         category.setDisplayName("Woodcutter");
         category.setDescription("Chop trees and gather wood resources");
         category.setIcon("Server/Item/Icons/Woodcutting.png");
+        category.setNotificationIcon("Wood_Oak_Trunk");
         
         ExpCurveConfig expCurve = new ExpCurveConfig();
         expCurve.setType("exponential");
@@ -293,6 +295,7 @@ public class DefaultConfigProvider {
         category.setDisplayName("Melee Fighter");
         category.setDescription("Master close combat with sword and axe");
         category.setIcon("Server/Item/Icons/CombatMelee.png");
+        category.setNotificationIcon("Weapon_Sword_Mithril");
         
         ExpCurveConfig expCurve = new ExpCurveConfig();
         expCurve.setType("exponential");
@@ -350,6 +353,7 @@ public class DefaultConfigProvider {
         category.setDisplayName("Ranged Fighter");
         category.setDescription("Master ranged combat with bow and crossbow");
         category.setIcon("Server/Item/Icons/CombatRanged.png");
+        category.setNotificationIcon("Weapon_Bow");
         
         ExpCurveConfig expCurve = new ExpCurveConfig();
         expCurve.setType("exponential");
@@ -397,6 +401,7 @@ public class DefaultConfigProvider {
         category.setDisplayName("Explorer");
         category.setDescription("Explore the world and discover new places");
         category.setIcon("Server/Item/Icons/Exploration.png");
+        category.setNotificationIcon("Item_Material_Map");
         
         ExpCurveConfig expCurve = new ExpCurveConfig();
         expCurve.setType("linear");
@@ -464,6 +469,7 @@ public class DefaultConfigProvider {
         category.setDisplayName("Farmer");
         category.setDescription("Grow crops and raise animals");
         category.setIcon("Server/Item/Icons/Farming.png");
+        category.setNotificationIcon("Plant_Crop_Wheat_Block");
 
         ExpCurveConfig expCurve = new ExpCurveConfig();
         expCurve.setType("exponential");
@@ -634,6 +640,7 @@ public class DefaultConfigProvider {
         category.setDisplayName("Crafter");
         category.setDescription("Craft items and refine materials");
         category.setIcon("Server/Item/Icons/Crafting.png");
+        category.setNotificationIcon("Ore_Iron_Stone");
 
         ExpCurveConfig expCurve = new ExpCurveConfig();
         expCurve.setType("exponential");

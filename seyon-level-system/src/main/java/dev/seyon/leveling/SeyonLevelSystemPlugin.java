@@ -69,7 +69,8 @@ public class SeyonLevelSystemPlugin extends JavaPlugin {
         this.categoryService = new CategoryService(this.getLogger());
         this.dataService = new LevelSystemDataService(this.getLogger());
         this.actionRegistryService = new ActionRegistryService(this.getLogger());
-        this.experienceService = new ExperienceService(this.getLogger(), this.categoryService, this.dataService, this.configService);
+        ExpNotificationService expNotificationService = new ExpNotificationService();
+        this.experienceService = new ExperienceService(this.getLogger(), this.categoryService, this.dataService, this.configService, expNotificationService);
         this.skillService = new SkillService(this.getLogger(), this.categoryService, this.dataService);
         this.modifierService = new ModifierService(this.getLogger(), this.categoryService, this.dataService, this.skillService);
         this.questService = new QuestService(this.getLogger(), this.categoryService, this.dataService);

@@ -50,6 +50,7 @@ Categories are defined in separate JSON files in `SeyonLevelSystem/config/catego
   "display_name": "Miner",
   "description": "Mine ores and gather resources",
   "icon": "Server/Item/Icons/Mining.png",
+  "notification_icon": "Ore_Iron_Stone",
   "exp_curve": {
     "type": "exponential",
     "base": 100,
@@ -95,6 +96,9 @@ Categories are defined in separate JSON files in `SeyonLevelSystem/config/catego
   }
 }
 ```
+
+- `icon` - Asset path for the category icon in the UI (e.g. `Server/Item/Icons/Mining.png`).
+- `notification_icon` - **Item ID** for the EXP gain notification (item-pickup style). When a player gains EXP, a [notification](https://hytalemodding.dev/en/docs/guides/plugin/send-notifications) is sent with this item as the icon. Overridable per category; if unset, the Java default or `Item_Material_Coin` is used. Must be a valid Hytale item ID (e.g. `Ore_Iron_Stone`, `Weapon_Sword_Mithril`, `Wood_Oak_Trunk`). See [hytaleitemids.com](https://www.hytaleitemids.com) for IDs.
 
 ### EXP Curves
 

@@ -21,13 +21,16 @@ public class ExperienceService {
     private final CategoryService categoryService;
     private final LevelSystemDataService dataService;
     private final LevelSystemConfigService configService;
+    private final ExpNotificationService expNotificationService;
 
-    public ExperienceService(HytaleLogger logger, CategoryService categoryService, 
-                           LevelSystemDataService dataService, LevelSystemConfigService configService) {
+    public ExperienceService(HytaleLogger logger, CategoryService categoryService,
+                             LevelSystemDataService dataService, LevelSystemConfigService configService,
+                             ExpNotificationService expNotificationService) {
         this.logger = logger;
         this.categoryService = categoryService;
         this.dataService = dataService;
         this.configService = configService;
+        this.expNotificationService = expNotificationService;
     }
 
     /**
@@ -72,6 +75,12 @@ public class ExperienceService {
         
         // Save data
         dataService.savePlayerData(playerId, data);
+        
+        // Send EXP gain notification (item-pickup style) when player is online
+        if (player != null) {
+            LevelSystemCategory category = categoryService.getCategory(categoryId);
+            expNotificationService.sendExpGain(playerId, category, amount);
+        }
         
         // Handle level up
         if (levelUp && player != null) {

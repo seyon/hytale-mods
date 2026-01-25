@@ -13,6 +13,8 @@ public class LevelSystemCategory {
     private String display_name;
     private String description;
     private String icon;
+    /** Item ID for the EXP gain notification icon (e.g. "Item_Material_Ingot_Iron"). Overridable in JSON. */
+    private String notification_icon;
     private ExpCurveConfig exp_curve = new ExpCurveConfig();
     private List<LevelBonusConfig> level_bonuses = new ArrayList<>();
     private List<SkillConfig> skills = new ArrayList<>();
@@ -48,6 +50,14 @@ public class LevelSystemCategory {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getNotificationIcon() {
+        return notification_icon;
+    }
+
+    public void setNotificationIcon(String notification_icon) {
+        this.notification_icon = notification_icon;
     }
 
     public ExpCurveConfig getExpCurve() {
@@ -129,6 +139,7 @@ public class LevelSystemCategory {
         if (from.display_name != null) this.display_name = from.display_name;
         if (from.description != null) this.description = from.description;
         if (from.icon != null) this.icon = from.icon;
+        if (from.notification_icon != null) this.notification_icon = from.notification_icon;
         if (from.exp_curve != null) this.exp_curve.mergeFrom(from.exp_curve);
         if (from.level_bonuses != null && !from.level_bonuses.isEmpty()) {
             java.util.Map<Integer, LevelBonusConfig> byLevel = new java.util.HashMap<>();
