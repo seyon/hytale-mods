@@ -141,7 +141,7 @@ public class MotdEventHandler {
 
         // Show as NOTIFICATION if enabled
         if (config.isShowAsNotification()) {
-            var playerRef = player.getPlayerRef();
+            var playerRef = dev.seyon.core.PlayerUtils.getPlayerRef(player);
             var packetHandler = playerRef.getPacketHandler();
             
             // Use a default item icon
@@ -220,7 +220,7 @@ public class MotdEventHandler {
         
         // Show as notification if enabled
         if (config.isShowAsNotification()) {
-            var playerRef = player.getPlayerRef();
+            var playerRef = dev.seyon.core.PlayerUtils.getPlayerRef(player);
             var packetHandler = playerRef.getPacketHandler();
             
             // Use a default item icon

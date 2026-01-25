@@ -1,10 +1,20 @@
 // Project-specific configuration for SeyonMotd
 version = '1.0.0'
 
+repositories {
+    mavenCentral()
+    maven {
+        name = "hytale-release"
+        url = uri("https://maven.hytale.com/release")
+    }
+    maven {
+        name = "hytale-pre-release"
+        url = uri("https://maven.hytale.com/pre-release")
+    }
+}
+
 dependencies {
-    compileOnly files('../dependency/HytaleServer.jar')
-    
-    // Seyon Core - compile-time only, available as plugin at runtime
+    compileOnly("com.hypixel.hytale:Server:2026.01.24-6e2d4fc36")
     compileOnly project(':seyon-core')
 }
 

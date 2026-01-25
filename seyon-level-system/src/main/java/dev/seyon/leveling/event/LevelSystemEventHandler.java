@@ -20,8 +20,7 @@ public class LevelSystemEventHandler {
         
         try {
             // Initialize player data
-            // Note: Using deprecated getUuid() as PlayerUtils.getPlayerUUID() may cause threading issues in events
-            plugin.getDataService().initializePlayerCategories(player.getUuid(), plugin.getCategoryService());
+            plugin.getDataService().initializePlayerCategories(dev.seyon.core.PlayerUtils.getPlayerUUID(player), plugin.getCategoryService());
             
             // Apply modifiers
             plugin.getModifierService().applyModifiers(player);
@@ -49,8 +48,7 @@ public class LevelSystemEventHandler {
      */
     public static void onPlayerDisconnect(Player player, SeyonLevelSystemPlugin plugin) {
         try {
-            // Note: Using deprecated getUuid() as PlayerUtils.getPlayerUUID() may cause threading issues
-            plugin.getDataService().unloadPlayerData(player.getUuid());
+            plugin.getDataService().unloadPlayerData(dev.seyon.core.PlayerUtils.getPlayerUUID(player));
         } catch (Exception e) {
             plugin.getLogger().at(java.util.logging.Level.WARNING)
                 .withCause(e)

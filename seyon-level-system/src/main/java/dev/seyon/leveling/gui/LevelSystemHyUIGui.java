@@ -50,15 +50,27 @@ public class LevelSystemHyUIGui {
         
         Player player = store.getComponent(entityRef, Player.getComponentType());
         if (player == null) {
+            SeyonLevelSystemPlugin.getInstance().getLogger()
+                .at(java.util.logging.Level.WARNING)
+                .log("GUI: Player component not found");
             return;
         }
 
         UUID playerId = PlayerUtils.getPlayerUUID(player);
         if (playerId == null) {
+            SeyonLevelSystemPlugin.getInstance().getLogger()
+                .at(java.util.logging.Level.WARNING)
+                .log("GUI: Player UUID not found");
             return;
         }
         
         PlayerLevelSystemData data = SeyonLevelSystemPlugin.getInstance().getDataService().getPlayerData(playerId);
+        
+        // DEBUG
+        SeyonLevelSystemPlugin.getInstance().getLogger()
+            .at(java.util.logging.Level.INFO)
+            .log("GUI: Opening for player " + player.getDisplayName() + ", categories: " + 
+                SeyonLevelSystemPlugin.getInstance().getCategoryService().getAllCategories().size());
         
         // Calculate total skill points across all categories
         int totalSkillPoints = 0;
@@ -81,13 +93,22 @@ public class LevelSystemHyUIGui {
         html.append("</div>");
         
         // Categories
+        int categoryCount = 0;
         for (LevelSystemCategory category : SeyonLevelSystemPlugin.getInstance().getCategoryService().getAllCategories()) {
             String categoryId = category.getId();
             CategoryProgress progress = data.getCategoryProgress().get(categoryId);
             
+            // DEBUG
+            SeyonLevelSystemPlugin.getInstance().getLogger()
+                .at(java.util.logging.Level.INFO)
+                .log("GUI: Processing category " + categoryId + ", display name: " + category.getDisplayName() + 
+                    ", progress: " + (progress != null ? "found" : "NULL"));
+            
             if (progress == null) {
                 continue;
             }
+            
+            categoryCount++;
             
             int level = progress.getCurrentLevel();
             double exp = progress.getCurrentExp();
@@ -123,9 +144,9 @@ public class LevelSystemHyUIGui {
             html.append("<div style='color: #FFD700;'>Skill Points: ").append(skillPoints).append("</div>");
             
             if (!canGainExp) {
-                html.append("<div style='color: #FF4444; font-weight: bold;'>⚠ Level Blocked!</div>");
+                html.append("<div style='color: #FF4444; font-weight: bold;'>WARNING: Level Blocked!</div>");
             } else if (pendingLevelUps > 0) {
-                html.append("<div style='color: #00FF00; font-weight: bold;'>✓ ").append(pendingLevelUps).append(" Level-Ups Available!</div>");
+                html.append("<div style='color: #00FF00; font-weight: bold;'>").append(pendingLevelUps).append(" Level-Ups Available!</div>");
             }
             html.append("</div>");
             
@@ -137,7 +158,7 @@ public class LevelSystemHyUIGui {
                 html.append("<div class='button' id='levelup_").append(categoryId).append("' ")
                     .append("style='flex: 1; padding: 10px; text-align: center; background-color: #00AA00; color: white; ")
                     .append("border-radius: 5px; font-weight: bold; cursor: pointer;'>")
-                    .append("⬆ Level Up (").append(pendingLevelUps).append(")")
+                    .append("LEVEL UP (").append(pendingLevelUps).append(")")
                     .append("</div>");
             }
             
@@ -145,14 +166,32 @@ public class LevelSystemHyUIGui {
             html.append("<div class='button' id='skills_").append(categoryId).append("' ")
                 .append("style='flex: 1; padding: 10px; text-align: center; background-color: #4169E1; color: white; ")
                 .append("border-radius: 5px; font-weight: bold; cursor: pointer;'>")
-                .append("🎯 Manage Skills")
+                .append("MANAGE SKILLS")
                 .append("</div>");
             
             html.append("</div>");
             html.append("</div>");
         }
         
+        // DEBUG: Log if no categories were rendered
+        if (categoryCount == 0) {
+            SeyonLevelSystemPlugin.getInstance().getLogger()
+                .at(java.util.logging.Level.WARNING)
+                .log("GUI: No categories rendered! Total categories loaded: " + 
+                    SeyonLevelSystemPlugin.getInstance().getCategoryService().getAllCategories().size() + 
+                    ", Player progress entries: " + data.getCategoryProgress().size());
+            
+            html.append("<div style='text-align: center; color: #FF0000; font-size: 18px; padding: 40px;'>");
+            html.append("No categories found! Please check your configuration.");
+            html.append("</div>");
+        }
+        
         html.append("</div></div></div>");
+        
+        // DEBUG: Log the HTML
+        SeyonLevelSystemPlugin.getInstance().getLogger()
+            .at(java.util.logging.Level.INFO)
+            .log("GUI HTML length: " + html.length() + ", categories rendered: " + categoryCount);
         
         // Build page and register event listeners
         PlayerRef playerRefForBuilder = store.getComponent(entityRef, PlayerRef.getComponentType());
@@ -173,9 +212,17 @@ public class LevelSystemHyUIGui {
             
             int pendingLevelUps = progress.getPendingLevelUps();
             
+            // DEBUG
+            SeyonLevelSystemPlugin.getInstance().getLogger()
+                .at(java.util.logging.Level.INFO)
+                .log("GUI: Registering event listener for category: " + categoryId);
+            
             // Level Up button - only register if button exists (pendingLevelUps > 0)
             if (pendingLevelUps > 0) {
                 builder.addEventListener("levelup_" + categoryId, CustomUIEventBindingType.Activating, (ctx) -> {
+                    SeyonLevelSystemPlugin.getInstance().getLogger()
+                        .at(java.util.logging.Level.INFO)
+                        .log("GUI: Level up button clicked for: " + categoryId);
                     SeyonLevelSystemPlugin.getInstance().getExperienceService().processLevelUp(player, categoryId);
                     show(); // Refresh GUI
                 });
@@ -183,6 +230,9 @@ public class LevelSystemHyUIGui {
             
             // Manage Skills button - always exists
             builder.addEventListener("skills_" + categoryId, CustomUIEventBindingType.Activating, (ctx) -> {
+                SeyonLevelSystemPlugin.getInstance().getLogger()
+                    .at(java.util.logging.Level.INFO)
+                    .log("GUI: Manage skills button clicked for: " + categoryId);
                 showSkills(categoryId);
             });
         }
@@ -227,7 +277,7 @@ public class LevelSystemHyUIGui {
         html.append("<div class='button' id='back_button' ")
             .append("style='padding: 10px; margin-bottom: 20px; background-color: #555555; color: white; ")
             .append("border-radius: 5px; text-align: center; cursor: pointer;'>")
-            .append("⬅ Back to Categories")
+            .append("&lt; BACK TO CATEGORIES")
             .append("</div>");
         
         // Header with Available Skill Points
@@ -281,15 +331,15 @@ public class LevelSystemHyUIGui {
                 boolean enableButton;
                 
                 if (isMaxLevel) {
-                    buttonText = "✓ MAX LEVEL";
+                    buttonText = "MAX LEVEL";
                     buttonColor = "#00AA00";
                     enableButton = false;
                 } else if (!canAfford) {
-                    buttonText = "✗ Not Enough SP";
+                    buttonText = "NOT ENOUGH SP";
                     buttonColor = "#AA0000";
                     enableButton = false;
                 } else {
-                    buttonText = currentLevel == 0 ? "🔓 Unlock" : "⬆ Upgrade";
+                    buttonText = currentLevel == 0 ? "UNLOCK" : "UPGRADE";
                     buttonColor = "#4169E1";
                     enableButton = true;
                 }

@@ -2,6 +2,15 @@
 version = '1.0.0'
 
 repositories {
+    mavenCentral()
+    maven {
+        name = "hytale-release"
+        url = uri("https://maven.hytale.com/release")
+    }
+    maven {
+        name = "hytale-pre-release"
+        url = uri("https://maven.hytale.com/pre-release")
+    }
     maven {
         url "https://www.cursemaven.com"
     }
@@ -11,9 +20,7 @@ dependencies {
     // HyUI for better UI creation
     implementation "curse.maven:hyui-1431415:7516306"
 
-    compileOnly files('../dependency/HytaleServer.jar')
-    
-    // Seyon Core - already declared but ensure it's compileOnly
+    compileOnly("com.hypixel.hytale:Server:2026.01.24-6e2d4fc36")
     compileOnly project(':seyon-core')
 }
 

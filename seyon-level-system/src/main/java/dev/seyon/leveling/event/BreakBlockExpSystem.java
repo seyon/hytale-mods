@@ -57,10 +57,8 @@ public class BreakBlockExpSystem extends EntityEventSystem<EntityStore, BreakBlo
             return;
         }
 
-        // Use deprecated getUuid(): ECS system runs on World-Thread, but PlayerUtils may
-        // still have constraints; getUuid() is safe in this context.
-        @SuppressWarnings("deprecation")
-        java.util.UUID playerId = player.getUuid();
+        // Get player UUID via PlayerUtils
+        java.util.UUID playerId = dev.seyon.core.PlayerUtils.getPlayerUUID(player);
         if (playerId == null) {
             return;
         }

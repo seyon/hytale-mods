@@ -135,9 +135,8 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
         }
         
         // Show stats
-        // Note: Using deprecated getUuid() here because async commands run outside WorldThread
-        // and cannot access the Component System (PlayerUtils.getPlayerUUID requires WorldThread)
-        PlayerLevelSystemData data = SeyonLevelSystemPlugin.getInstance().getDataService().getPlayerData(player.getUuid());
+        // Using PlayerUtils.getPlayerUUID() to centralize deprecated API usage
+        PlayerLevelSystemData data = SeyonLevelSystemPlugin.getInstance().getDataService().getPlayerData(dev.seyon.core.PlayerUtils.getPlayerUUID(player));
         
         context.sendMessage(Message.raw("=== Level System Stats for " + player.getDisplayName() + " ===").color(Color.ORANGE).bold(true));
         
