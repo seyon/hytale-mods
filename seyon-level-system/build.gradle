@@ -1,11 +1,22 @@
 // Project-specific configuration for SeyonLevelSystem
 version = '1.0.0'
 
+repositories {
+    maven {
+        url "https://www.cursemaven.com"
+    }
+}
+
 dependencies {
+    // HyUI for better UI creation
+    implementation "curse.maven:hyui-1431415:7516306"
+
     compileOnly files('../dependency/HytaleServer.jar')
     
     // Seyon Core - already declared but ensure it's compileOnly
     compileOnly project(':seyon-core')
+
+    compileOnly files('../dependency/HyUI-0.5.2-all.jar')
 }
 
 // Process resources to replace ${version} in manifest.json

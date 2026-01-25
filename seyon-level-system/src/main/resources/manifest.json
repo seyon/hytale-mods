@@ -11,7 +11,9 @@
   "Website": "https://seyon.de",
   "ServerVersion": "*",
   "Dependencies": {},
-  "OptionalDependencies": {},
+  "OptionalDependencies": {
+    "EllieAU:HyUI": "*"
+  },
   "DisabledByDefault": false,
   "IncludesAssetPack": true,
   "Main": "dev.seyon.leveling.SeyonLevelSystemPlugin"

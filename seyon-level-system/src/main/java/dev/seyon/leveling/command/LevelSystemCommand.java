@@ -2,7 +2,6 @@ package dev.seyon.leveling.command;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
@@ -16,7 +15,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.seyon.leveling.SeyonLevelSystemPlugin;
 import dev.seyon.leveling.config.LevelSystemCategory;
-import dev.seyon.leveling.gui.LevelSystemMainGui;
+import dev.seyon.leveling.gui.LevelSystemHyUIGui;
 import dev.seyon.leveling.model.CategoryProgress;
 import dev.seyon.leveling.model.PlayerLevelSystemData;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
@@ -67,11 +66,21 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
     }
 
     /**
-     * Open Level System GUI (same pattern as seyon-motd)
+     * Open Level System GUI using HyUI
      */
     private CompletableFuture<Void> handleGui(CommandContext context, CommandSender sender) {
         if (!(sender instanceof Player player)) {
             context.sendMessage(Message.raw("This command can only be used by players.").color(Color.RED));
+            return CompletableFuture.completedFuture(null);
+        }
+
+        // Check if HyUI is available
+        try {
+            Class.forName("au.ellie.hyui.builders.PageBuilder");
+        } catch (ClassNotFoundException e) {
+            context.sendMessage(Message.raw("HyUI mod is not installed! Please install HyUI to use the GUI.").color(Color.RED));
+            context.sendMessage(Message.raw("Download: https://www.curseforge.com/hytale/mods/hyui").color(Color.YELLOW));
+            context.sendMessage(Message.raw("Use '/leveling stats' to see your progress without GUI.").color(Color.GRAY));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -87,13 +96,20 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
         World world = store.getExternalData().getWorld();
 
         return CompletableFuture.runAsync(() -> {
-            PlayerRef playerRefComponent = store.getComponent(ref, PlayerRef.getComponentType());
-            if (playerRefComponent != null) {
-                player.getPageManager().openCustomPage(
-                        ref,
-                        store,
-                        new LevelSystemMainGui(playerRefComponent, CustomPageLifetime.CanDismiss)
-                );
+            try {
+                PlayerRef playerRefComponent = store.getComponent(ref, PlayerRef.getComponentType());
+                if (playerRefComponent != null) {
+                    LevelSystemHyUIGui gui = new LevelSystemHyUIGui(playerRefComponent, store);
+                    gui.open();
+                } else {
+                    player.sendMessage(Message.raw("Failed to open GUI: PlayerRef component not found").color(Color.RED));
+                }
+            } catch (Exception e) {
+                player.sendMessage(Message.raw("Failed to open GUI: " + e.getMessage()).color(Color.RED));
+                SeyonLevelSystemPlugin.getInstance().getLogger()
+                    .at(java.util.logging.Level.SEVERE)
+                    .withCause(e)
+                    .log("Failed to open Level System GUI");
             }
         }, world);
     }
