@@ -1,7 +1,7 @@
 {
   "Group": "Seyon",
   "Name": "SeyonLevelSystem",
-  "Version": "1.0.0",
+  "Version": "${version}",
   "Description": "Comprehensive leveling system with categories, skills, and quests for Hytale",
   "Authors": [
     {
@@ -9,13 +9,10 @@
     }
   ],
   "Website": "https://seyon.de",
-  "Repository": "https://github.com/seyon/hytale-mods/seyon-level-system",
   "ServerVersion": "*",
   "Dependencies": {},
-  "OptionalDependencies": {
-    "Seyon:SeyonArcaneArts": "*"
-  },
+  "OptionalDependencies": {},
   "DisabledByDefault": false,
-  "Main": "dev.seyon.leveling.SeyonLevelSystemPlugin",
-  "IncludesAssetPack": true
+  "IncludesAssetPack": true,
+  "Main": "dev.seyon.leveling.SeyonLevelSystemPlugin"
 }

@@ -1,4 +1,4 @@
-package dev.seyon.utils;
+package dev.seyon.core;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;

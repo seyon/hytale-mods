@@ -1,8 +1,8 @@
 {
   "Group": "Seyon",
-  "Name": "SeyonMotd",
+  "Name": "SeyonCore",
   "Version": "${version}",
-  "Description": "Configurable MOTD plugin with GUI for message management",
+  "Description": "Core utilities and settings system for Seyon mods",
   "Authors": [
     {
       "Name": "Christian Wielath"
@@ -14,5 +14,5 @@
   "OptionalDependencies": {},
   "DisabledByDefault": false,
   "IncludesAssetPack": true,
-  "Main": "dev.seyon.motd.SeyonMotdPlugin"
+  "Main": "dev.seyon.core.SeyonCorePlugin"
 }

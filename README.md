@@ -6,10 +6,9 @@ Sammlung von Hytale Server Plugins/Mods entwickelt von Seyon.
 
 | Projekt | Beschreibung | Status |
 |---------|-------------|--------|
-| [seyon-utils](./seyon-utils) | Zentrale Utility-Bibliothek für alle Mods | ✅ Funktional |
-| [seyon-motd](./seyon-motd) | Configurable MOTD plugin with GUI | ✅ Funktional |
-| [seyon-arcane-arts](./seyon-arcane-arts) | Umfangreiches Zaubersystem | 🚧 In Entwicklung |
-| [seyon-level-system](./seyon-level-system) | Erweiterbares Level-System mit Kategorien | 🚧 In Entwicklung |
+| [seyon-core](./seyon-core) | Zentrale Core-Bibliothek für alle Mods | ✅ Funktional |
+| [seyon-motd](./seyon-motd) | MOTD Plugin mit Konfiguration via JSON | ✅ Funktional |
+| [seyon-magic](./seyon-magic) | Umfangreiches Zaubersystem | 🚧 In Entwicklung |
 
 ## 🔧 Build & Development
 
@@ -28,10 +27,9 @@ Alle Projekte mit einem Command bauen:
 gradlew.bat build
 
 # Nur ein spezifisches Projekt bauen
-gradlew.bat :seyon-utils:build
+gradlew.bat :seyon-core:build
 gradlew.bat :seyon-motd:build
-gradlew.bat :seyon-arcane-arts:build
-gradlew.bat :seyon-level-system:build
+gradlew.bat :seyon-magic:build
 
 # Alle Tests ausführen
 gradlew.bat test
@@ -64,7 +62,7 @@ gradlew.bat :seyon-motd:tasks
 hytale-mods/
 ├── dependency/                    # Gemeinsame Abhängigkeiten
 │   └── HytaleServer.jar          # Hytale Server API
-├── seyon-utils/                  # ⭐ Zentrale Utilities
+├── seyon-core/                   # ⭐ Zentrale Core-Bibliothek
 │   ├── src/
 │   ├── build.gradle
 │   └── README.md
@@ -72,12 +70,7 @@ hytale-mods/
 │   ├── src/
 │   ├── build.gradle
 │   └── README.md
-├── seyon-arcane-arts/            # Magic System Plugin
-│   ├── docs/                     # Detaillierte Dokumentation
-│   ├── src/
-│   ├── build.gradle
-│   └── README.md
-├── seyon-level-system/           # Leveling System Plugin
+├── seyon-magic/                  # Magic System Plugin
 │   ├── docs/                     # Detaillierte Dokumentation
 │   ├── src/
 │   ├── build.gradle
@@ -96,6 +89,15 @@ hytale-mods/
 - **Root Build**: Gemeinsame Konfiguration für alle Subprojekte
 - **Subprojekte**: Projektspezifische Konfiguration und Code
 - **Gemeinsame Dependencies**: Zentral verwaltet im `dependency/` Ordner
+- **seyon-core**: Basis-Funktionalität für alle Mods (Plugin-Discovery, etc.)
+
+### Konfiguration
+
+Alle Mods verwenden **JSON-Konfigurationsdateien** in ihren jeweiligen Verzeichnissen:
+- `SeyonMotd/motd-config.json` - MOTD-Einstellungen
+- Weitere Mods folgen dem gleichen Schema
+
+**Keine GUIs** - Alle Einstellungen werden über Config-Dateien verwaltet.
 
 ### Vorteile
 
@@ -104,7 +106,8 @@ hytale-mods/
 - ✅ Einfaches Updaten von HytaleServer.jar
 - ✅ Konsistente Java/Gradle-Versionen
 - ✅ Ein Command baut alle Projekte
-- ✅ Gemeinsame Utilities in `seyon-utils` reduzieren Code-Duplikation
+- ✅ Gemeinsame Services in `seyon-core` reduzieren Code-Duplikation
+- ✅ Einfache Konfiguration via JSON-Dateien
 
 ## 📝 Neue Projekte hinzufügen
 
@@ -112,10 +115,12 @@ hytale-mods/
 2. In `settings.gradle` hinzufügen: `include 'seyon-xyz'`
 3. `build.gradle` im neuen Projekt erstellen (siehe Beispiele)
 4. Standard-Ordnerstruktur anlegen (`src/main/java`, `src/main/resources`)
+5. `seyon-core` als dependency hinzufügen
 
 ## 🔗 Dependencies
 
 - **HytaleServer.jar** - Hytale Server API (lokal, siehe `dependency/`)
+- **seyon-core** - Muss von allen Mods als dependency eingebunden werden
 - Wird zentral verwaltet und von allen Projekten genutzt
 
 ## 📄 Lizenz

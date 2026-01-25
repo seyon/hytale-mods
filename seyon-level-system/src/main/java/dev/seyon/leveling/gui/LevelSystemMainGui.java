@@ -16,7 +16,7 @@ import dev.seyon.leveling.SeyonLevelSystemPlugin;
 import dev.seyon.leveling.config.LevelSystemCategory;
 import dev.seyon.leveling.model.CategoryProgress;
 import dev.seyon.leveling.model.PlayerLevelSystemData;
-import dev.seyon.utils.PlayerUtils;
+import dev.seyon.core.PlayerUtils;
 
 import javax.annotation.Nonnull;
 

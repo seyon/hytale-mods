@@ -3,4 +3,16 @@ version = '1.0.0'
 
 dependencies {
     compileOnly files('../dependency/HytaleServer.jar')
+    
+    // Seyon Core - compile-time only, available as plugin at runtime
+    compileOnly project(':seyon-core')
+}
+
+// Process resources to replace ${version} in manifest.json
+processResources {
+    inputs.property 'version', project.version
+    
+    filesMatching('manifest.json') {
+        expand 'version': project.version
+    }
 }

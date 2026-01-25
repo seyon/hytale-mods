@@ -1,7 +1,7 @@
 {
   "Group": "Seyon",
   "Name": "SeyonArcaneArts",
-  "Version": "1.0.0",
+  "Version": "${version}",
   "Description": "Arcane Arts - A comprehensive magic system for Hytale with wands, grimoires, spells and modifiers",
   "Authors": [
     {
@@ -9,11 +9,10 @@
     }
   ],
   "Website": "https://seyon.de",
-  "Repository": "https://github.com/seyon/hytale-mods/seyon-arcane-arts",
   "ServerVersion": "*",
   "Dependencies": {},
   "OptionalDependencies": {},
   "DisabledByDefault": false,
-  "Main": "dev.seyon.magic.SeyonMagicPlugin",
-  "IncludesAssetPack": true
+  "IncludesAssetPack": true,
+  "Main": "dev.seyon.magic.SeyonMagicPlugin"
 }

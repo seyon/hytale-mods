@@ -8,7 +8,7 @@ import dev.seyon.leveling.config.MilestoneQuestConfig;
 import dev.seyon.leveling.config.QuestItemRequirement;
 import dev.seyon.leveling.model.CategoryProgress;
 import dev.seyon.leveling.model.PlayerLevelSystemData;
-import dev.seyon.utils.PlayerUtils;
+import dev.seyon.core.PlayerUtils;
 
 import java.awt.Color;
 import java.util.List;

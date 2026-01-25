@@ -16,4 +16,13 @@ dependencies {
     compileOnly files('../dependency/HytaleServer.jar')
 }
 
+// Process resources to replace ${version} in manifest.json
+processResources {
+    inputs.property 'version', project.version
+    
+    filesMatching('manifest.json') {
+        expand 'version': project.version
+    }
+}
+
 // SeyonUtils - Common utilities for Seyon mods
