@@ -165,14 +165,23 @@ public class LevelSystemHyUIGui {
         // Add event listeners for all categories
         for (LevelSystemCategory category : SeyonLevelSystemPlugin.getInstance().getCategoryService().getAllCategories()) {
             String categoryId = category.getId();
+            CategoryProgress progress = data.getCategoryProgress().get(categoryId);
             
-            // Level Up button
-            builder.addEventListener("levelup_" + categoryId, CustomUIEventBindingType.Activating, (ctx) -> {
-                SeyonLevelSystemPlugin.getInstance().getExperienceService().processLevelUp(player, categoryId);
-                show(); // Refresh GUI
-            });
+            if (progress == null) {
+                continue;
+            }
             
-            // Manage Skills button
+            int pendingLevelUps = progress.getPendingLevelUps();
+            
+            // Level Up button - only register if button exists (pendingLevelUps > 0)
+            if (pendingLevelUps > 0) {
+                builder.addEventListener("levelup_" + categoryId, CustomUIEventBindingType.Activating, (ctx) -> {
+                    SeyonLevelSystemPlugin.getInstance().getExperienceService().processLevelUp(player, categoryId);
+                    show(); // Refresh GUI
+                });
+            }
+            
+            // Manage Skills button - always exists
             builder.addEventListener("skills_" + categoryId, CustomUIEventBindingType.Activating, (ctx) -> {
                 showSkills(categoryId);
             });
