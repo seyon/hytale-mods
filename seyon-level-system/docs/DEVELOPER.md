@@ -10,7 +10,7 @@ seyon-level-system/
 │   │   ├── LevelSystemAPI.java           # API interface
 │   │   └── LevelSystemAPIImpl.java      # API implementation
 │   ├── command/                           # Command handlers
-│   │   └── LevelSystemCommand.java      # Main /leveling command
+│   │   └── LevelSystemCommand.java      # Main /seyon-level command
 │   ├── config/                            # Configuration classes
 │   │   ├── ActionConfig.java             # Action-to-EXP mappings
 │   │   ├── ExpCurveConfig.java           # EXP curve calculations
@@ -66,7 +66,7 @@ seyon-level-system/
   - ModifierService
   - QuestService
 - Public API (LevelSystemAPI + LevelSystemAPIImpl)
-- Command system (/leveling with subcommands)
+- Command system (/seyon-level with subcommands)
 - Event handler (PlayerReady)
 - Default category configs (Mining, Woodcutting, Combat x2, Exploration)
 - Seyon Arcane Arts integration (auto-registration of magic category)

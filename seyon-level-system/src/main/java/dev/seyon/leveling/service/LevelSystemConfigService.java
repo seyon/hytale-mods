@@ -55,6 +55,9 @@ public class LevelSystemConfigService {
         if (!categoriesDir.exists()) categoriesDir.mkdirs();
         if (!actionsDir.exists()) actionsDir.mkdirs();
 
+        // Run config migrations: add missing entries only; never change existing or differing values
+        ConfigMigrationRunner.run(configRoot, gson, logger);
+
         // Load main config
         mainConfig = loadConfig(new File(configRoot, "main.json"), LevelSystemMainConfig.class, new LevelSystemMainConfig());
         

@@ -27,7 +27,7 @@ import static com.hypixel.hytale.server.core.command.commands.player.inventory.I
 
 /**
  * Main command for Level System
- * Commands: /leveling, /leveling stats, /leveling addexp, /leveling setlevel, /leveling reload
+ * Commands: /seyon-level, /seyon-level stats, /seyon-level addexp, /seyon-level setlevel, /seyon-level reload
  */
 public class LevelSystemCommand extends AbstractAsyncCommand {
 
@@ -39,7 +39,7 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
     OptionalArg<Integer> levelArg = this.withOptionalArg("level", "Level", ArgTypes.INTEGER);
 
     public LevelSystemCommand() {
-        super("leveling", "Level System commands");
+        super("seyon-level", "Level System commands");
     }
 
     @NonNullDecl
@@ -80,7 +80,7 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
         } catch (ClassNotFoundException e) {
             context.sendMessage(Message.raw("HyUI mod is not installed! Please install HyUI to use the GUI.").color(Color.RED));
             context.sendMessage(Message.raw("Download: https://www.curseforge.com/hytale/mods/hyui").color(Color.YELLOW));
-            context.sendMessage(Message.raw("Use '/leveling stats' to see your progress without GUI.").color(Color.GRAY));
+            context.sendMessage(Message.raw("Use '/seyon-level stats' to see your progress without GUI.").color(Color.GRAY));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -169,7 +169,7 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
         Integer amount = amountArg.get(context);
         
         if (playerName == null || categoryId == null || amount == null) {
-            context.sendMessage(Message.raw("Usage: /leveling addexp --player=<name> --category=<id> --amount=<exp>").color(Color.RED));
+            context.sendMessage(Message.raw("Usage: /seyon-level addexp --player=<name> --category=<id> --amount=<exp>").color(Color.RED));
             return CompletableFuture.completedFuture(null);
         }
         
@@ -188,7 +188,7 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
         Integer level = levelArg.get(context);
         
         if (playerName == null || categoryId == null || level == null) {
-            context.sendMessage(Message.raw("Usage: /leveling setlevel --player=<name> --category=<id> --level=<level>").color(Color.RED));
+            context.sendMessage(Message.raw("Usage: /seyon-level setlevel --player=<name> --category=<id> --level=<level>").color(Color.RED));
             return CompletableFuture.completedFuture(null);
         }
         
@@ -206,7 +206,7 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
         String categoryId = categoryArg.get(context);
         
         if (playerName == null || categoryId == null) {
-            context.sendMessage(Message.raw("Usage: /leveling resetskills --player=<name> --category=<id>").color(Color.RED));
+            context.sendMessage(Message.raw("Usage: /seyon-level resetskills --player=<name> --category=<id>").color(Color.RED));
             return CompletableFuture.completedFuture(null);
         }
         
@@ -257,12 +257,12 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
      */
     private CompletableFuture<Void> handleHelp(CommandContext context, CommandSender sender) {
         context.sendMessage(Message.raw("=== Level System Commands ===").color(Color.ORANGE).bold(true));
-        context.sendMessage(Message.raw("/leveling - Open Level System GUI").color(Color.GRAY));
-        context.sendMessage(Message.raw("/leveling stats [player] - View Level System statistics").color(Color.GRAY));
-        context.sendMessage(Message.raw("/leveling addexp <player> <category> <amount> - Grant experience (admin)").color(Color.GRAY));
-        context.sendMessage(Message.raw("/leveling setlevel <player> <category> <level> - Set player level (admin)").color(Color.GRAY));
-        context.sendMessage(Message.raw("/leveling resetskills <player> <category> - Reset skills (admin)").color(Color.GRAY));
-        context.sendMessage(Message.raw("/leveling reload - Reload configuration").color(Color.GRAY));
+        context.sendMessage(Message.raw("/seyon-level - Open Level System GUI").color(Color.GRAY));
+        context.sendMessage(Message.raw("/seyon-level stats [player] - View Level System statistics").color(Color.GRAY));
+        context.sendMessage(Message.raw("/seyon-level addexp <player> <category> <amount> - Grant experience (admin)").color(Color.GRAY));
+        context.sendMessage(Message.raw("/seyon-level setlevel <player> <category> <level> - Set player level (admin)").color(Color.GRAY));
+        context.sendMessage(Message.raw("/seyon-level resetskills <player> <category> - Reset skills (admin)").color(Color.GRAY));
+        context.sendMessage(Message.raw("/seyon-level reload - Reload configuration").color(Color.GRAY));
         
         return CompletableFuture.completedFuture(null);
     }

@@ -25,11 +25,11 @@ See the `docs/` folder for detailed configuration guides.
 
 ## Commands
 
-- `/leveling` - Open the leveling GUI
-- `/leveling stats [player]` - View leveling statistics
-- `/leveling addexp <player> <category> <amount>` - Grant experience (admin)
-- `/leveling setlevel <player> <category> <level>` - Set player level (admin)
-- `/leveling reload` - Reload configuration
+- `/seyon-level` - Open the leveling GUI
+- `/seyon-level stats [player]` - View leveling statistics
+- `/seyon-level addexp <player> <category> <amount>` - Grant experience (admin)
+- `/seyon-level setlevel <player> <category> <level>` - Set player level (admin)
+- `/seyon-level reload` - Reload configuration
 
 ## API for Mod Developers
 

@@ -1,5 +1,6 @@
 package dev.seyon.leveling;
 
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
@@ -7,6 +8,9 @@ import dev.seyon.leveling.api.LevelSystemAPI;
 import dev.seyon.leveling.api.LevelSystemAPIImpl;
 import dev.seyon.leveling.command.LevelSystemCommand;
 import dev.seyon.leveling.event.BreakBlockExpSystem;
+import dev.seyon.leveling.event.DiscoverZoneExpSystem;
+import dev.seyon.leveling.event.EntityKillExpSystem;
+import dev.seyon.leveling.event.ExplorationWalkExpSystem;
 import dev.seyon.leveling.event.LevelSystemEventHandler;
 import dev.seyon.leveling.service.*;
 
@@ -29,6 +33,10 @@ public class SeyonLevelSystemPlugin extends JavaPlugin {
     private ModifierService modifierService;
     private QuestService questService;
     private ActionRegistryService actionRegistryService;
+
+    /** Per-player state for explore_steps: accumulated walk distance. Cleaned on disconnect. */
+    private final java.util.Map<java.util.UUID, ExplorationWalkExpSystem.ExplorationWalkData> explorationWalkTracker =
+        new java.util.concurrent.ConcurrentHashMap<>();
     
     // API
     private LevelSystemAPI api;
@@ -80,14 +88,25 @@ public class SeyonLevelSystemPlugin extends JavaPlugin {
         // Register command
         this.getCommandRegistry().registerCommand(new LevelSystemCommand());
 
-        // Register event handler
+        // Register event handlers
         this.getEventRegistry().registerGlobal(
             PlayerReadyEvent.class, 
             event -> LevelSystemEventHandler.onPlayerReady(event, this)
         );
+        this.getEventRegistry().registerGlobal(
+            PlayerDisconnectEvent.class,
+            event -> LevelSystemEventHandler.onPlayerDisconnect(event, this)
+        );
 
-        // Register BreakBlock -> EXP system (action IDs: break_<blockType.getId()>)
+        // Register EXP systems for categories
+        // BreakBlock: mining/woodcutting (action IDs: break_<blockType.getId()>)
         this.getEntityStoreRegistry().registerSystem(new BreakBlockExpSystem(this));
+        // DiscoverZone: exploration (action: discover_zone)
+        this.getEntityStoreRegistry().registerSystem(new DiscoverZoneExpSystem(this));
+        // EntityKill: combat_melee (kill_enemy_melee), combat_ranged (kill_enemy_ranged)
+        this.getEntityStoreRegistry().registerSystem(new EntityKillExpSystem(this));
+        // Exploration: every 100 blocks walked (action: explore_steps)
+        this.getEntityStoreRegistry().registerSystem(new ExplorationWalkExpSystem(this));
 
         // Try to integrate with Seyon Arcane Arts if installed
         try {
@@ -140,6 +159,13 @@ public class SeyonLevelSystemPlugin extends JavaPlugin {
 
     public ActionRegistryService getActionRegistryService() {
         return actionRegistryService;
+    }
+
+    /**
+     * Walk tracker for explore_steps EXP. Entries are removed on player disconnect.
+     */
+    public java.util.Map<java.util.UUID, ExplorationWalkExpSystem.ExplorationWalkData> getExplorationWalkTracker() {
+        return explorationWalkTracker;
     }
 
     public LevelSystemAPI getAPI() {

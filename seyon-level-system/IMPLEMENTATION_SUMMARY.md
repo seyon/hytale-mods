@@ -36,12 +36,12 @@ Das Seyon Level System Mod wurde erfolgreich erstellt mit folgenden Komponenten:
 - ✅ Methoden: registerCategory, registerAction, grantExperience, getPlayerLevel, hasSkill, getModifierValue
 
 ### 5. Command-System
-- ✅ `/leveling` - Hauptcommand mit Subcommands
-- ✅ `/leveling stats` - Zeigt Statistiken
-- ✅ `/leveling addexp` - Admin: EXP geben
-- ✅ `/leveling setlevel` - Admin: Level setzen
-- ✅ `/leveling resetskills` - Admin: Skills zurücksetzen
-- ✅ `/leveling reload` - Config neu laden
+- ✅ `/seyon-level` - Hauptcommand mit Subcommands
+- ✅ `/seyon-level stats` - Zeigt Statistiken
+- ✅ `/seyon-level addexp` - Admin: EXP geben
+- ✅ `/seyon-level setlevel` - Admin: Level setzen
+- ✅ `/seyon-level resetskills` - Admin: Skills zurücksetzen
+- ✅ `/seyon-level reload` - Config neu laden
 
 ### 6. Event-Handler
 - ✅ `LevelSystemEventHandler` - PlayerReady Event

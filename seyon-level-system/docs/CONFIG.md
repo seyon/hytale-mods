@@ -223,12 +223,35 @@ Actions define what grants EXP and how much. They are defined in `SeyonLevelSyst
 
 Action IDs should match the events/actions that trigger them in your mod or Hytale.
 
+### Event-based Action IDs (built-in)
+
+These action IDs are triggered automatically by Hytale events:
+
+| Category        | Action ID           | Event / Trigger                          |
+|-----------------|---------------------|------------------------------------------|
+| mining          | `break_<blockId>`   | BreakBlockEvent (e.g. `break_stone`)     |
+| woodcutting     | `break_<blockId>`   | BreakBlockEvent (e.g. `break_oak_log`)   |
+| combat_melee    | `kill_enemy_melee`  | Entity death, killer used melee (EntitySource)   |
+| combat_ranged   | `kill_enemy_ranged` | Entity death, killer used ranged (ProjectileSource) |
+| exploration     | `discover_zone`     | DiscoverZoneEvent (zone/region discovery)|
+| exploration     | `explore_steps`    | Every 100 blocks walked (ExplorationWalkExpSystem)|
+
+Add these to your `actions/<category>.json` to enable EXP. The exploration category also grants **movement_speed** per level (level bonuses); configure in the category's `level_bonuses` (e.g. `movement_speed: 0.01` = 1% per level). Magic (Seyon Arcane Arts) uses `cast_spell_<quality>` and is registered by the Magic integration.
+
+## Config Migrations
+
+The plugin maintains `SeyonLevelSystem/config/migrations.json`, which records which config migrations have already been applied. **Migrations only add missing entries**; if a value exists (even if it differs from the default), it is never changed.
+
+- **New installation:** On first start with empty `categories/` and `actions/`, all known migrations are marked as applied and none are executed. Default configs are created by the normal flow.
+- **Upgrade:** If `migrations.json` is missing but you have existing configs, pending migrations run once and add only missing keys (e.g. `explore_steps` in `actions/exploration.json`). After that, they are marked applied and not run again.
+- **Developer note:** To add a new migration, extend `ConfigMigrationRunner.ALL_MIGRATION_IDS` and implement the corresponding case in `runMigration()` (idempotent: only add when the entry is absent).
+
 ## Creating Custom Categories
 
 1. Create a new JSON file in `SeyonLevelSystem/config/categories/`
 2. Define the category structure (see example above)
 3. Create a corresponding actions file in `SeyonLevelSystem/config/actions/`
-4. Reload the configuration with `/leveling reload`
+4. Reload the configuration with `/seyon-level reload`
 
 ## Tips
 
@@ -243,4 +266,4 @@ If categories don't load:
 - Check JSON syntax with a validator
 - Ensure file names match category IDs
 - Check server console for error messages
-- Use `/leveling reload` to reload configuration
+- Use `/seyon-level reload` to reload configuration

@@ -308,7 +308,7 @@ public class DefaultConfigCreator {
         // Level Bonuses
         for (int i = 1; i <= 100; i++) {
             LevelBonusConfig bonus = new LevelBonusConfig(i);
-            bonus.getModifiers().put("movement_speed", 0.005);
+            bonus.getModifiers().put("movement_speed", 0.01);
             if (i % 5 == 0) {
                 bonus.getModifiers().put("max_stamina", 3.0);
             }
@@ -331,16 +331,26 @@ public class DefaultConfigCreator {
         // Actions
         ActionConfig actions = new ActionConfig();
         actions.setCategory("exploration");
+        ActionConfig.ActionMapping map0 = new ActionConfig.ActionMapping();
+        map0.setActionId("explore_steps");
+        map0.setExp(2.0);
+        actions.getActions().add(map0);
+
         ActionConfig.ActionMapping map1 = new ActionConfig.ActionMapping();
-        map1.setActionId("discover_new_chunk");
-        map1.setExp(10.0);
+        map1.setActionId("discover_zone");
+        map1.setExp(15.0);
         actions.getActions().add(map1);
-        
+
         ActionConfig.ActionMapping map2 = new ActionConfig.ActionMapping();
-        map2.setActionId("discover_new_biome");
-        map2.setExp(100.0);
+        map2.setActionId("discover_new_chunk");
+        map2.setExp(10.0);
         actions.getActions().add(map2);
-        
+
+        ActionConfig.ActionMapping map3 = new ActionConfig.ActionMapping();
+        map3.setActionId("discover_new_biome");
+        map3.setExp(100.0);
+        actions.getActions().add(map3);
+
         saveConfig(new File(actionsDir, "exploration.json"), actions);
     }
 

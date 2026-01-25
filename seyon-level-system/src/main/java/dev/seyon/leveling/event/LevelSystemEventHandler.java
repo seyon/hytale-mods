@@ -2,10 +2,12 @@ package dev.seyon.leveling.event;
 
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import dev.seyon.leveling.SeyonLevelSystemPlugin;
 
 import java.awt.Color;
+import java.util.UUID;
 
 /**
  * Event handler for Level System events
@@ -29,7 +31,7 @@ public class LevelSystemEventHandler {
             player.sendMessage(Message.join(
                 Message.raw("⭐ [Level System] ").color(Color.ORANGE),
                 Message.raw("Level System initialized! Use ").color(Color.GRAY),
-                Message.raw("/leveling stats").color(Color.CYAN).bold(true),
+                Message.raw("/seyon-level stats").color(Color.CYAN).bold(true),
                 Message.raw(" to view your progress.").color(Color.GRAY)
             ));
             
@@ -44,19 +46,21 @@ public class LevelSystemEventHandler {
     }
 
     /**
-     * Handle player disconnect - save data
+     * Handle player disconnect: unload data and clean exploration walk tracker
      */
-    public static void onPlayerDisconnect(Player player, SeyonLevelSystemPlugin plugin) {
+    public static void onPlayerDisconnect(PlayerDisconnectEvent event, SeyonLevelSystemPlugin plugin) {
+        UUID playerId = event.getPlayerRef().getUuid();
         try {
-            plugin.getDataService().unloadPlayerData(dev.seyon.core.PlayerUtils.getPlayerUUID(player));
+            plugin.getDataService().unloadPlayerData(playerId);
         } catch (Exception e) {
             plugin.getLogger().at(java.util.logging.Level.WARNING)
                 .withCause(e)
-                .log("Failed to unload player data for: " + player.getDisplayName());
+                .log("Failed to unload player data for: " + playerId);
         }
+        plugin.getExplorationWalkTracker().remove(playerId);
     }
 
-    // TODO: Implement event handlers for EXP-gaining actions:
+    // Further events are wired in dedicated EXP systems (BreakBlock, DiscoverZone, EntityKill, ExplorationWalk).
     // - BlockBreakEvent -> grant EXP based on block type
     // - EntityKillEvent -> grant EXP based on entity type
     // - ItemCraftEvent -> grant EXP based on crafted item
