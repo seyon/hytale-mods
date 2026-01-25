@@ -99,7 +99,7 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
             try {
                 PlayerRef playerRefComponent = store.getComponent(ref, PlayerRef.getComponentType());
                 if (playerRefComponent != null) {
-                    LevelSystemHyUIGui gui = new LevelSystemHyUIGui(playerRefComponent, store);
+                    LevelSystemHyUIGui gui = new LevelSystemHyUIGui(ref, store);
                     gui.open();
                 } else {
                     player.sendMessage(Message.raw("Failed to open GUI: PlayerRef component not found").color(Color.RED));

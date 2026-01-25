@@ -1,5 +1,6 @@
 package dev.seyon.leveling.gui;
 
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.server.core.Message;
@@ -15,6 +16,7 @@ import dev.seyon.leveling.model.PlayerLevelSystemData;
 import au.ellie.hyui.builders.PageBuilder;
 
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,12 +26,12 @@ import java.util.UUID;
  */
 public class LevelSystemHyUIGui {
     
-    private final PlayerRef playerRef;
+    private final Ref<EntityStore> entityRef;
     private final Store<EntityStore> store;
     private String currentCategoryView = null; // null = categories view, otherwise = skill view for category
     
-    public LevelSystemHyUIGui(PlayerRef playerRef, Store<EntityStore> store) {
-        this.playerRef = playerRef;
+    public LevelSystemHyUIGui(Ref<EntityStore> entityRef, Store<EntityStore> store) {
+        this.entityRef = entityRef;
         this.store = store;
     }
     
@@ -46,7 +48,7 @@ public class LevelSystemHyUIGui {
     private void show() {
         currentCategoryView = null;
         
-        Player player = store.getComponent(playerRef.getRef(), Player.getComponentType());
+        Player player = store.getComponent(entityRef, Player.getComponentType());
         if (player == null) {
             return;
         }
@@ -92,7 +94,7 @@ public class LevelSystemHyUIGui {
             double expNeeded = progress.getExpForNextLevel();
             int skillPoints = data.getAvailableSkillPoints(categoryId);
             int pendingLevelUps = progress.getPendingLevelUps();
-            boolean canGainExp = progress.canGainExp();
+            boolean canGainExp = progress.isCanGainExp();
             
             double expPercent = expNeeded > 0 ? (exp / expNeeded) * 100 : 0;
             
@@ -153,7 +155,12 @@ public class LevelSystemHyUIGui {
         html.append("</div></div></div>");
         
         // Build page and register event listeners
-        PageBuilder builder = PageBuilder.pageForPlayer(playerRef).fromHtml(html.toString());
+        PlayerRef playerRefForBuilder = store.getComponent(entityRef, PlayerRef.getComponentType());
+        if (playerRefForBuilder == null) {
+            return;
+        }
+        
+        PageBuilder builder = PageBuilder.pageForPlayer(playerRefForBuilder).fromHtml(html.toString());
         
         // Add event listeners for all categories
         for (LevelSystemCategory category : SeyonLevelSystemPlugin.getInstance().getCategoryService().getAllCategories()) {
@@ -180,7 +187,7 @@ public class LevelSystemHyUIGui {
     private void showSkills(String categoryId) {
         currentCategoryView = categoryId;
         
-        Player player = store.getComponent(playerRef.getRef(), Player.getComponentType());
+        Player player = store.getComponent(entityRef, Player.getComponentType());
         if (player == null) {
             return;
         }
@@ -199,7 +206,7 @@ public class LevelSystemHyUIGui {
         }
         
         int availableSkillPoints = data.getAvailableSkillPoints(categoryId);
-        Map<String, Integer> activeSkills = data.getActiveSkills(categoryId);
+        Map<String, Integer> activeSkills = data.getActiveSkills().getOrDefault(categoryId, new HashMap<>());
         
         // Build HTML
         StringBuilder html = new StringBuilder();
@@ -229,7 +236,7 @@ public class LevelSystemHyUIGui {
             for (SkillConfig skill : category.getSkills()) {
                 String skillId = skill.getId();
                 int currentLevel = activeSkills.getOrDefault(skillId, 0);
-                int maxLevel = skill.getMaxLevel();
+                int maxLevel = skill.getMaxPoints();
                 int cost = skill.getCost();
                 
                 boolean isMaxLevel = currentLevel >= maxLevel;
@@ -294,7 +301,12 @@ public class LevelSystemHyUIGui {
         html.append("</div></div></div>");
         
         // Build page and register event listeners
-        PageBuilder builder = PageBuilder.pageForPlayer(playerRef).fromHtml(html.toString());
+        PlayerRef playerRefForBuilder = store.getComponent(entityRef, PlayerRef.getComponentType());
+        if (playerRefForBuilder == null) {
+            return;
+        }
+        
+        PageBuilder builder = PageBuilder.pageForPlayer(playerRefForBuilder).fromHtml(html.toString());
         
         // Back button
         builder.addEventListener("back_button", CustomUIEventBindingType.Activating, (ctx) -> {
@@ -306,7 +318,7 @@ public class LevelSystemHyUIGui {
             for (SkillConfig skill : category.getSkills()) {
                 String skillId = skill.getId();
                 int currentLevel = activeSkills.getOrDefault(skillId, 0);
-                int maxLevel = skill.getMaxLevel();
+                int maxLevel = skill.getMaxPoints();
                 int cost = skill.getCost();
                 
                 boolean canUpgrade = currentLevel < maxLevel && availableSkillPoints >= cost;

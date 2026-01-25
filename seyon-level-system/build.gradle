@@ -15,8 +15,6 @@ dependencies {
     
     // Seyon Core - already declared but ensure it's compileOnly
     compileOnly project(':seyon-core')
-
-    compileOnly files('../dependency/HyUI-0.5.2-all.jar')
 }
 
 // Process resources to replace ${version} in manifest.json
