@@ -8,10 +8,13 @@ import dev.seyon.leveling.api.LevelSystemAPI;
 import dev.seyon.leveling.api.LevelSystemAPIImpl;
 import dev.seyon.leveling.command.LevelSystemCommand;
 import dev.seyon.leveling.event.BreakBlockExpSystem;
+import dev.seyon.leveling.event.CraftRecipeExpSystem;
 import dev.seyon.leveling.event.DiscoverZoneExpSystem;
 import dev.seyon.leveling.event.EntityKillExpSystem;
 import dev.seyon.leveling.event.ExplorationWalkExpSystem;
 import dev.seyon.leveling.event.LevelSystemEventHandler;
+import dev.seyon.leveling.event.PlaceBlockExpSystem;
+import dev.seyon.leveling.event.UseBlockHarvestExpSystem;
 import dev.seyon.leveling.service.*;
 
 import javax.annotation.Nonnull;
@@ -107,6 +110,19 @@ public class SeyonLevelSystemPlugin extends JavaPlugin {
         this.getEntityStoreRegistry().registerSystem(new EntityKillExpSystem(this));
         // Exploration: every 100 blocks walked (action: explore_steps)
         this.getEntityStoreRegistry().registerSystem(new ExplorationWalkExpSystem(this));
+        // CraftRecipeEvent.Post: crafting (craft_item or craft_<recipeId>, exp * quantity)
+        this.getEntityStoreRegistry().registerSystem(new CraftRecipeExpSystem(this));
+        // PlaceBlockEvent: farming etc. (place_<blockKey> or place_<itemId>)
+        this.getEntityStoreRegistry().registerSystem(new PlaceBlockExpSystem(this));
+        // UseBlockEvent.Post: farming (harvest_<blockId> or harvest_crop)
+        this.getEntityStoreRegistry().registerSystem(new UseBlockHarvestExpSystem(this));
+        // DiscoverInstanceEvent.Display: exploration (discover_instance), optional if builtin.instances not on classpath
+        try {
+            this.getEntityStoreRegistry().registerSystem(new dev.seyon.leveling.event.DiscoverInstanceExpSystem(this));
+        } catch (NoClassDefFoundError | Exception e) {
+            this.getLogger().at(java.util.logging.Level.FINE)
+                .log("DiscoverInstanceExpSystem not registered (instances builtin may be missing): " + (e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName()));
+        }
 
         // Try to integrate with Seyon Arcane Arts if installed
         try {

@@ -41,6 +41,15 @@ public class ExpCurveConfig {
         this.custom_formula = custom_formula;
     }
 
+    /** Merge from loaded: non-null/non-default from wins. */
+    public void mergeFrom(ExpCurveConfig from) {
+        if (from == null) return;
+        if (from.type != null) this.type = from.type;
+        this.base = from.base;
+        this.multiplier = from.multiplier;
+        if (from.custom_formula != null) this.custom_formula = from.custom_formula;
+    }
+
     /**
      * Calculate EXP required for a given level
      */

@@ -8,35 +8,35 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
+import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.seyon.leveling.SeyonLevelSystemPlugin;
 import dev.seyon.leveling.service.ActionRegistryService;
 import dev.seyon.leveling.service.ExperienceService;
-import dev.seyon.leveling.SeyonLevelSystemPlugin;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * ECS system: on BreakBlockEvent, grant EXP if the block matches a registered action.
- * Action ID convention: "break_" + blockType.getId() (e.g. break_stone, break_Wood_Oak_Trunk).
- * Formula: exp * difficulty_factor per block. Column counting for woodcutting was removed:
- * it is not reliable (blocks above may or may not fall depending on position); if needed,
- * it would have to be driven by a Hytale event that reports the actual felled blocks.
+ * ECS system: on UseBlockEvent.Post, grant Farming EXP when a player harvests a crop (uses a harvestable block).
+ * Action IDs: "harvest_&lt;blockId&gt;" (from BlockType.getId()) or fallback "harvest_crop".
+ * Add harvest_&lt;blockId&gt; or harvest_crop to actions/farming.json.
  */
-public class BreakBlockExpSystem extends EntityEventSystem<EntityStore, BreakBlockEvent> {
+public class UseBlockHarvestExpSystem extends EntityEventSystem<EntityStore, UseBlockEvent.Post> {
+
+    private static final String ACTION_HARVEST_CROP = "harvest_crop";
 
     private final SeyonLevelSystemPlugin plugin;
 
-    public BreakBlockExpSystem(SeyonLevelSystemPlugin plugin) {
-        super(BreakBlockEvent.class);
+    public UseBlockHarvestExpSystem(SeyonLevelSystemPlugin plugin) {
+        super(UseBlockEvent.Post.class);
         this.plugin = plugin;
     }
 
     @Override
     public void handle(int index, @Nonnull ArchetypeChunk<EntityStore> archetypeChunk,
                        @Nonnull Store<EntityStore> store, @Nonnull CommandBuffer<EntityStore> commandBuffer,
-                       @Nonnull BreakBlockEvent event) {
+                       @Nonnull UseBlockEvent.Post event) {
         Ref<EntityStore> ref = archetypeChunk.getReferenceTo(index);
 
         Player player = store.getComponent(ref, Player.getComponentType());
@@ -44,17 +44,15 @@ public class BreakBlockExpSystem extends EntityEventSystem<EntityStore, BreakBlo
             return;
         }
 
-        String blockId = event.getBlockType().getId();
+        String blockId = event.getBlockType() != null ? event.getBlockType().getId() : null;
         if (blockId == null || blockId.isEmpty()) {
             return;
         }
 
         ActionRegistryService actionRegistry = plugin.getActionRegistryService();
-        String actionId = "break_" + blockId;
+        String actionId = actionRegistry.hasAction("harvest_" + blockId) ? "harvest_" + blockId : ACTION_HARVEST_CROP;
         if (!actionRegistry.hasAction(actionId)) {
-            String fallback = "break_" + blockId.toLowerCase();
-            if (actionRegistry.hasAction(fallback)) actionId = fallback;
-            else return;
+            return;
         }
 
         ActionRegistryService.ActionMapping mapping = actionRegistry.getActionMapping(actionId);
@@ -67,12 +65,8 @@ public class BreakBlockExpSystem extends EntityEventSystem<EntityStore, BreakBlo
             return;
         }
 
-        double totalExp = mapping.getExp() * mapping.getDifficultyFactor();
-        if (totalExp <= 0) {
-            return;
-        }
         ExperienceService expService = plugin.getExperienceService();
-        expService.grantExp(playerId, mapping.getCategoryId(), totalExp, player);
+        expService.grantExp(playerId, mapping.getCategoryId(), mapping.getExp(), player);
     }
 
     @Nullable

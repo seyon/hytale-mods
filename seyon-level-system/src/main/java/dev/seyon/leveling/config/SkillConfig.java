@@ -70,4 +70,16 @@ public class SkillConfig {
     public void setEffects(Map<String, Double> effects) {
         this.effects = effects;
     }
+
+    /** Merge from loaded: non-null from wins. */
+    public void mergeFrom(SkillConfig from) {
+        if (from == null) return;
+        if (from.id != null) this.id = from.id;
+        this.tier = from.tier;
+        if (from.name != null) this.name = from.name;
+        if (from.description != null) this.description = from.description;
+        this.cost = from.cost;
+        this.max_points = from.max_points;
+        if (from.effects != null && !from.effects.isEmpty()) this.effects.putAll(from.effects);
+    }
 }

@@ -43,4 +43,15 @@ public class MilestoneQuestConfig {
     public void setRequiredItems(List<QuestItemRequirement> required_items) {
         this.required_items = required_items;
     }
+
+    /** Merge from loaded: non-null from wins. */
+    public void mergeFrom(MilestoneQuestConfig from) {
+        if (from == null) return;
+        if (from.type != null) this.type = from.type;
+        if (from.npc_id != null) this.npc_id = from.npc_id;
+        if (from.dialog_key != null) this.dialog_key = from.dialog_key;
+        if (from.required_items != null && !from.required_items.isEmpty()) {
+            this.required_items = new ArrayList<>(from.required_items);
+        }
+    }
 }

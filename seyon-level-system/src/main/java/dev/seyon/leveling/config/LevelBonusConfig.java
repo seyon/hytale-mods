@@ -32,4 +32,11 @@ public class LevelBonusConfig {
     public void setModifiers(Map<String, Double> modifiers) {
         this.modifiers = modifiers;
     }
+
+    /** Merge from loaded: from.modifiers override this. */
+    public void mergeFrom(LevelBonusConfig from) {
+        if (from == null) return;
+        this.level = from.level;
+        if (from.modifiers != null && !from.modifiers.isEmpty()) this.modifiers.putAll(from.modifiers);
+    }
 }

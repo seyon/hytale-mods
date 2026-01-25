@@ -36,6 +36,16 @@ public class LevelSystemMainConfig {
         this.milestone_intervals = milestone_intervals;
     }
 
+    /**
+     * Merge from loaded config: file values (non-null) override this. Used when merging file over Java defaults.
+     */
+    public void mergeFrom(LevelSystemMainConfig from) {
+        if (from == null) return;
+        if (from.mod_info != null) mod_info.mergeFrom(from.mod_info);
+        if (from.global_settings != null) global_settings.mergeFrom(from.global_settings);
+        if (from.milestone_intervals != null) milestone_intervals.mergeFrom(from.milestone_intervals);
+    }
+
     public static class ModInfo {
         private String name = "Seyon Level System";
         private String version = "1.0.0";
@@ -63,6 +73,13 @@ public class LevelSystemMainConfig {
 
         public void setAuthor(String author) {
             this.author = author;
+        }
+
+        public void mergeFrom(ModInfo from) {
+            if (from == null) return;
+            if (from.name != null) this.name = from.name;
+            if (from.version != null) this.version = from.version;
+            if (from.author != null) this.author = from.author;
         }
     }
 
@@ -112,6 +129,15 @@ public class LevelSystemMainConfig {
         public void setRespecCostType(String respec_cost_type) {
             this.respec_cost_type = respec_cost_type;
         }
+
+        public void mergeFrom(GlobalSettings from) {
+            if (from == null) return;
+            this.max_level = from.max_level;
+            this.exp_overflow_enabled = from.exp_overflow_enabled;
+            this.skill_points_per_level = from.skill_points_per_level;
+            this.allow_skill_respec = from.allow_skill_respec;
+            if (from.respec_cost_type != null) this.respec_cost_type = from.respec_cost_type;
+        }
     }
 
     public static class MilestoneIntervals {
@@ -132,6 +158,14 @@ public class LevelSystemMainConfig {
 
         public void setLevelsRequiringQuest(List<Integer> levels_requiring_quest) {
             this.levels_requiring_quest = levels_requiring_quest;
+        }
+
+        public void mergeFrom(MilestoneIntervals from) {
+            if (from == null) return;
+            this.quest_every_n_levels = from.quest_every_n_levels;
+            if (from.levels_requiring_quest != null && !from.levels_requiring_quest.isEmpty()) {
+                this.levels_requiring_quest = new ArrayList<>(from.levels_requiring_quest);
+            }
         }
     }
 }

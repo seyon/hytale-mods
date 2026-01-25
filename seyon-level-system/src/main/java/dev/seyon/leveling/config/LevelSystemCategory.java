@@ -119,4 +119,42 @@ public class LevelSystemCategory {
         }
         return null;
     }
+
+    /**
+     * Merge from loaded: file (non-null) overrides. Lists/maps merged by key (level, id).
+     */
+    public void mergeFrom(LevelSystemCategory from) {
+        if (from == null) return;
+        if (from.id != null) this.id = from.id;
+        if (from.display_name != null) this.display_name = from.display_name;
+        if (from.description != null) this.description = from.description;
+        if (from.icon != null) this.icon = from.icon;
+        if (from.exp_curve != null) this.exp_curve.mergeFrom(from.exp_curve);
+        if (from.level_bonuses != null && !from.level_bonuses.isEmpty()) {
+            java.util.Map<Integer, LevelBonusConfig> byLevel = new java.util.HashMap<>();
+            for (LevelBonusConfig b : this.level_bonuses) byLevel.put(b.getLevel(), b);
+            for (LevelBonusConfig b : from.level_bonuses) {
+                LevelBonusConfig cur = byLevel.get(b.getLevel());
+                if (cur != null) cur.mergeFrom(b); else byLevel.put(b.getLevel(), b);
+            }
+            this.level_bonuses = new ArrayList<>(byLevel.values());
+            this.level_bonuses.sort((a, b) -> Integer.compare(a.getLevel(), b.getLevel()));
+        }
+        if (from.skills != null && !from.skills.isEmpty()) {
+            java.util.Map<String, SkillConfig> byId = new java.util.HashMap<>();
+            for (SkillConfig s : this.skills) if (s.getId() != null) byId.put(s.getId(), s);
+            for (SkillConfig s : from.skills) {
+                SkillConfig cur = s.getId() != null ? byId.get(s.getId()) : null;
+                if (cur != null) cur.mergeFrom(s); else if (s.getId() != null) byId.put(s.getId(), s);
+            }
+            this.skills = new ArrayList<>(byId.values());
+        }
+        if (from.milestones != null && !from.milestones.isEmpty()) {
+            for (java.util.Map.Entry<Integer, MilestoneQuestConfig> e : from.milestones.entrySet()) {
+                MilestoneQuestConfig cur = this.milestones.get(e.getKey());
+                if (cur != null && e.getValue() != null) cur.mergeFrom(e.getValue());
+                else if (e.getValue() != null) this.milestones.put(e.getKey(), e.getValue());
+            }
+        }
+    }
 }

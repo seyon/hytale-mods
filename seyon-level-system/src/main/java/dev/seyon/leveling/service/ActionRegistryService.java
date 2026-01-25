@@ -29,7 +29,7 @@ public class ActionRegistryService {
         for (ActionConfig actionConfig : configService.getActionConfigs()) {
             String category = actionConfig.getCategory();
             for (ActionConfig.ActionMapping mapping : actionConfig.getActions()) {
-                registerAction(mapping.getActionId(), category, mapping.getExp());
+                registerAction(mapping.getActionId(), category, mapping.getExp(), mapping.getDifficultyFactor());
             }
         }
         
@@ -37,16 +37,23 @@ public class ActionRegistryService {
     }
 
     /**
-     * Register an action with EXP reward
+     * Register an action with EXP reward (difficulty factor 1.0).
      */
     public void registerAction(String actionId, String categoryId, double exp) {
+        registerAction(actionId, categoryId, exp, 1.0);
+    }
+
+    /**
+     * Register an action with EXP reward and difficulty factor.
+     */
+    public void registerAction(String actionId, String categoryId, double exp, double difficultyFactor) {
         if (actionId == null || categoryId == null) {
             logger.at(Level.WARNING).log("Attempted to register invalid action");
             return;
         }
-        
-        actionMap.put(actionId, new ActionMapping(categoryId, exp));
-        logger.at(Level.FINE).log("Registered action: " + actionId + " -> " + categoryId + " (" + exp + " EXP)");
+        double factor = difficultyFactor <= 0 ? 1.0 : difficultyFactor;
+        actionMap.put(actionId, new ActionMapping(categoryId, exp, factor));
+        logger.at(Level.FINE).log("Registered action: " + actionId + " -> " + categoryId + " (" + exp + " EXP, difficulty=" + factor + ")");
     }
 
     /**
@@ -76,10 +83,12 @@ public class ActionRegistryService {
     public static class ActionMapping {
         private final String categoryId;
         private final double exp;
+        private final double difficultyFactor;
 
-        public ActionMapping(String categoryId, double exp) {
+        public ActionMapping(String categoryId, double exp, double difficultyFactor) {
             this.categoryId = categoryId;
             this.exp = exp;
+            this.difficultyFactor = difficultyFactor <= 0 ? 1.0 : difficultyFactor;
         }
 
         public String getCategoryId() {
@@ -88,6 +97,11 @@ public class ActionRegistryService {
 
         public double getExp() {
             return exp;
+        }
+
+        /** EXP multiplier for harder blocks (e.g. special trees). */
+        public double getDifficultyFactor() {
+            return difficultyFactor;
         }
     }
 }
