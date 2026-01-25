@@ -78,168 +78,111 @@ public class LevelSystemHyUIGui {
             totalSkillPoints += data.getAvailableSkillPoints(categoryId);
         }
         
-        // Build HTML
+        // Build HTML: tabular overview
         StringBuilder html = new StringBuilder();
         html.append("<div class='page-overlay'>");
         html.append("<div class='container' data-hyui-title='Level System'>");
         html.append("<div class='container-contents'>");
         
         // Header
-        html.append("<div style='text-align: center; margin-bottom: 20px;'>");
-        html.append("<div style='font-size: 24px; font-weight: bold; color: #FF8C00;'>Level System</div>");
-        html.append("<div style='font-size: 16px; color: #FFD700; margin-top: 10px;'>");
-        html.append(player.getDisplayName()).append(" - Total Skill Points: ").append(totalSkillPoints);
+        html.append("<div style='text-align: center; margin-bottom: 16px;'>");
+        html.append("<div style='font-size: 22px; font-weight: bold; color: #FF8C00;'>Level System</div>");
+        html.append("<div style='font-size: 14px; color: #FFD700; margin-top: 6px;'>");
+        html.append(player.getDisplayName()).append(" — Skill Points: ").append(totalSkillPoints);
         html.append("</div>");
         html.append("</div>");
         
-        // Categories
+        // Table: Category | Level | EXP (bar + current/next) | + | »
+        html.append("<table style='width:100%; border-collapse: collapse; font-size: 14px;'>");
+        html.append("<thead><tr style='border-bottom: 2px solid #444;'>");
+        html.append("<th style='text-align:left; padding: 10px 8px; color: #00CED1;'>Category</th>");
+        html.append("<th style='text-align:center; padding: 10px 8px; color: #00CED1;'>Level</th>");
+        html.append("<th style='text-align:left; padding: 10px 8px; color: #00CED1;'>EXP</th>");
+        html.append("<th style='text-align:center; padding: 10px 8px; color: #00CED1; width: 48px;'>+</th>");
+        html.append("<th style='text-align:center; padding: 10px 8px; color: #00CED1; width: 40px;'>»</th>");
+        html.append("</tr></thead><tbody>");
+        
         int categoryCount = 0;
         for (LevelSystemCategory category : SeyonLevelSystemPlugin.getInstance().getCategoryService().getAllCategories()) {
             String categoryId = category.getId();
             CategoryProgress progress = data.getCategoryProgress().get(categoryId);
-            
-            // DEBUG
-            SeyonLevelSystemPlugin.getInstance().getLogger()
-                .at(java.util.logging.Level.INFO)
-                .log("GUI: Processing category " + categoryId + ", display name: " + category.getDisplayName() + 
-                    ", progress: " + (progress != null ? "found" : "NULL"));
-            
-            if (progress == null) {
-                continue;
-            }
-            
+            if (progress == null) continue;
             categoryCount++;
             
             int level = progress.getCurrentLevel();
             double exp = progress.getCurrentExp();
             double expNeeded = progress.getExpForNextLevel();
-            int skillPoints = data.getAvailableSkillPoints(categoryId);
             int pendingLevelUps = progress.getPendingLevelUps();
-            boolean canGainExp = progress.isCanGainExp();
             
-            double expPercent = expNeeded > 0 ? (exp / expNeeded) * 100 : 0;
+            double expPercent = (expNeeded > 0) ? Math.min(100, (exp / expNeeded) * 100) : 100;
+            String expText = (expNeeded <= 0) ? "MAX" : (String.format("%.0f", exp) + " / " + String.format("%.0f", expNeeded));
             
-            // Category Card
-            html.append("<div class='button' style='padding: 15px; margin: 10px 0; background-color: #2a2a2a; border-radius: 8px;'>");
-            
-            // Category Name and Level
-            html.append("<div style='font-size: 20px; font-weight: bold; color: #00CED1; margin-bottom: 10px;'>");
-            html.append(category.getDisplayName()).append(" - Level ").append(level);
+            html.append("<tr style='border-bottom: 1px solid #333;'>");
+            // Category
+            html.append("<td style='padding: 10px 8px; color: #E0E0E0;'>").append(escapeHtml(category.getDisplayName())).append("</td>");
+            // Level
+            html.append("<td style='padding: 10px 8px; text-align:center; color: #FFD700; font-weight: bold;'>").append(level).append("</td>");
+            // EXP: bar + current/next
+            html.append("<td style='padding: 10px 8px;'>");
+            html.append("<div style='display:flex; align-items:center; gap: 8px;'>");
+            html.append("<div style='flex:1; min-width: 60px; background: #1a1a1a; border-radius: 4px; height: 12px; overflow: hidden;'>");
+            html.append("<div style='width: ").append(String.format("%.1f", expPercent)).append("%; height: 100%; background: linear-gradient(90deg, #00CC00, #32CD32); border-radius: 4px;'></div>");
             html.append("</div>");
-            
-            // EXP Bar
-            html.append("<div style='margin-bottom: 10px;'>");
-            html.append("<div style='background-color: #1a1a1a; border-radius: 5px; padding: 2px; height: 24px;'>");
-            html.append("<div style='background: linear-gradient(90deg, #00FF00, #32CD32); width: ")
-                .append(String.format("%.1f", expPercent))
-                .append("%; height: 20px; border-radius: 3px; transition: width 0.3s;'></div>");
-            html.append("</div>");
-            html.append("<div style='font-size: 14px; color: #808080; margin-top: 5px;'>")
-                .append(String.format("%.0f", exp)).append(" / ").append(String.format("%.0f", expNeeded)).append(" EXP")
-                .append("</div>");
-            html.append("</div>");
-            
-            // Info Row
-            html.append("<div style='display: flex; justify-content: space-between; margin-bottom: 10px;'>");
-            html.append("<div style='color: #FFD700;'>Skill Points: ").append(skillPoints).append("</div>");
-            
-            if (!canGainExp) {
-                html.append("<div style='color: #FF4444; font-weight: bold;'>WARNING: Level Blocked!</div>");
-            } else if (pendingLevelUps > 0) {
-                html.append("<div style='color: #00FF00; font-weight: bold;'>").append(pendingLevelUps).append(" Level-Ups Available!</div>");
-            }
-            html.append("</div>");
-            
-            // Buttons Row
-            html.append("<div style='display: flex; gap: 10px;'>");
-            
-            // Level Up Button
+            html.append("<span style='font-size: 12px; color: #888; white-space: nowrap;'>").append(expText).append("</span>");
+            html.append("</div></td>");
+            // + (Level-Up) — only when pending > 0
+            html.append("<td style='padding: 6px 8px; text-align:center;'>");
             if (pendingLevelUps > 0) {
-                html.append("<div class='button' id='levelup_").append(categoryId).append("' ")
-                    .append("style='flex: 1; padding: 10px; text-align: center; background-color: #00AA00; color: white; ")
-                    .append("border-radius: 5px; font-weight: bold; cursor: pointer;'>")
-                    .append("LEVEL UP (").append(pendingLevelUps).append(")")
-                    .append("</div>");
+                String plusLabel = (pendingLevelUps > 1) ? "+" + pendingLevelUps : "+";
+                html.append("<div class='button' id='levelup_").append(categoryId).append("' style='padding: 4px 10px; font-size: 16px; font-weight: bold; background: #00AA00; color: white; border-radius: 4px; cursor: pointer;'>").append(plusLabel).append("</div>");
+            } else {
+                html.append("<span style='color: #555;'>—</span>");
             }
-            
-            // Manage Skills Button
-            html.append("<div class='button' id='skills_").append(categoryId).append("' ")
-                .append("style='flex: 1; padding: 10px; text-align: center; background-color: #4169E1; color: white; ")
-                .append("border-radius: 5px; font-weight: bold; cursor: pointer;'>")
-                .append("MANAGE SKILLS")
-                .append("</div>");
-            
-            html.append("</div>");
-            html.append("</div>");
+            html.append("</td>");
+            // » (Skills)
+            html.append("<td style='padding: 6px 8px; text-align:center;'>");
+            html.append("<div class='button' id='skills_").append(categoryId).append("' style='padding: 4px 8px; font-size: 14px; background: #4169E1; color: white; border-radius: 4px; cursor: pointer;'>»</div>");
+            html.append("</td>");
+            html.append("</tr>");
         }
         
-        // DEBUG: Log if no categories were rendered
+        html.append("</tbody></table>");
+        
         if (categoryCount == 0) {
-            SeyonLevelSystemPlugin.getInstance().getLogger()
-                .at(java.util.logging.Level.WARNING)
-                .log("GUI: No categories rendered! Total categories loaded: " + 
-                    SeyonLevelSystemPlugin.getInstance().getCategoryService().getAllCategories().size() + 
-                    ", Player progress entries: " + data.getCategoryProgress().size());
-            
-            html.append("<div style='text-align: center; color: #FF0000; font-size: 18px; padding: 40px;'>");
-            html.append("No categories found! Please check your configuration.");
-            html.append("</div>");
+            html.append("<div style='text-align: center; color: #FF4444; font-size: 16px; padding: 24px;'>No categories loaded. Check configuration.</div>");
         }
         
         html.append("</div></div></div>");
         
-        // DEBUG: Log the HTML
-        SeyonLevelSystemPlugin.getInstance().getLogger()
-            .at(java.util.logging.Level.INFO)
-            .log("GUI HTML length: " + html.length() + ", categories rendered: " + categoryCount);
-        
-        // Build page and register event listeners
         PlayerRef playerRefForBuilder = store.getComponent(entityRef, PlayerRef.getComponentType());
-        if (playerRefForBuilder == null) {
-            return;
-        }
+        if (playerRefForBuilder == null) return;
         
         PageBuilder builder = PageBuilder.pageForPlayer(playerRefForBuilder).fromHtml(html.toString());
         
-        // Add event listeners for all categories
         for (LevelSystemCategory category : SeyonLevelSystemPlugin.getInstance().getCategoryService().getAllCategories()) {
             String categoryId = category.getId();
             CategoryProgress progress = data.getCategoryProgress().get(categoryId);
-            
-            if (progress == null) {
-                continue;
-            }
-            
+            if (progress == null) continue;
             int pendingLevelUps = progress.getPendingLevelUps();
             
-            // DEBUG
-            SeyonLevelSystemPlugin.getInstance().getLogger()
-                .at(java.util.logging.Level.INFO)
-                .log("GUI: Registering event listener for category: " + categoryId);
-            
-            // Level Up button - only register if button exists (pendingLevelUps > 0)
             if (pendingLevelUps > 0) {
                 builder.addEventListener("levelup_" + categoryId, CustomUIEventBindingType.Activating, (ctx) -> {
-                    SeyonLevelSystemPlugin.getInstance().getLogger()
-                        .at(java.util.logging.Level.INFO)
-                        .log("GUI: Level up button clicked for: " + categoryId);
                     SeyonLevelSystemPlugin.getInstance().getExperienceService().processLevelUp(player, categoryId);
-                    show(); // Refresh GUI
+                    show();
                 });
             }
-            
-            // Manage Skills button - always exists
-            builder.addEventListener("skills_" + categoryId, CustomUIEventBindingType.Activating, (ctx) -> {
-                SeyonLevelSystemPlugin.getInstance().getLogger()
-                    .at(java.util.logging.Level.INFO)
-                    .log("GUI: Manage skills button clicked for: " + categoryId);
-                showSkills(categoryId);
-            });
+            builder.addEventListener("skills_" + categoryId, CustomUIEventBindingType.Activating, (ctx) -> showSkills(categoryId));
         }
         
         builder.open(store);
     }
     
+    /** Escape HTML for safe display in UI. */
+    private static String escapeHtml(String s) {
+        if (s == null) return "";
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
+    }
+
     /**
      * Show skills for a category
      */

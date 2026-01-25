@@ -5,8 +5,13 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import dev.seyon.leveling.SeyonLevelSystemPlugin;
+import dev.seyon.leveling.config.LevelSystemCategory;
+import dev.seyon.leveling.model.CategoryProgress;
+import dev.seyon.leveling.model.PlayerLevelSystemData;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,25 +24,51 @@ public class LevelSystemEventHandler {
      */
     public static void onPlayerReady(PlayerReadyEvent event, SeyonLevelSystemPlugin plugin) {
         Player player = event.getPlayer();
-        
+        UUID playerId = dev.seyon.core.PlayerUtils.getPlayerUUID(player);
+        if (playerId == null) return;
+
         try {
             // Initialize player data
-            plugin.getDataService().initializePlayerCategories(dev.seyon.core.PlayerUtils.getPlayerUUID(player), plugin.getCategoryService());
-            
+            plugin.getDataService().initializePlayerCategories(playerId, plugin.getCategoryService());
+
             // Apply modifiers
             plugin.getModifierService().applyModifiers(player);
-            
-            // Send welcome message immediately (no scheduler to avoid connection issues)
+
+            // Welcome message
             player.sendMessage(Message.join(
                 Message.raw("⭐ [Level System] ").color(Color.ORANGE),
-                Message.raw("Level System initialized! Use ").color(Color.GRAY),
-                Message.raw("/seyon-level stats").color(Color.CYAN).bold(true),
-                Message.raw(" to view your progress.").color(Color.GRAY)
+                Message.raw("Level System initialized. Use ").color(Color.GRAY),
+                Message.raw("/seyon-level").color(Color.CYAN).bold(true),
+                Message.raw(" for your overview.").color(Color.GRAY)
             ));
-            
+
+            // If at least one level-up is ready: remind player to open GUI
+            PlayerLevelSystemData data = plugin.getDataService().getPlayerData(playerId);
+            int total = 0;
+            List<String> parts = new ArrayList<>();
+            for (java.util.Map.Entry<String, CategoryProgress> e : data.getCategoryProgress().entrySet()) {
+                CategoryProgress p = e.getValue();
+                if (p.getPendingLevelUps() > 0) {
+                    String categoryId = e.getKey();
+                    LevelSystemCategory cat = plugin.getCategoryService().getCategory(categoryId);
+                    String name = (cat != null && cat.getDisplayName() != null) ? cat.getDisplayName() : categoryId;
+                    total += p.getPendingLevelUps();
+                    parts.add(name + " (" + p.getPendingLevelUps() + ")");
+                }
+            }
+            if (total > 0) {
+                player.sendMessage(Message.join(
+                    Message.raw("Level-up(s) ready: ").color(Color.ORANGE),
+                    Message.raw(String.join(", ", parts)).color(Color.YELLOW),
+                    Message.raw(" — Use ").color(Color.GRAY),
+                    Message.raw("/seyon-level").color(Color.CYAN).bold(true),
+                    Message.raw(" to claim them.").color(Color.GRAY)
+                ));
+            }
+
             plugin.getLogger().at(java.util.logging.Level.INFO)
                 .log("Level System initialized for player: " + player.getDisplayName());
-                
+
         } catch (Exception e) {
             plugin.getLogger().at(java.util.logging.Level.SEVERE)
                 .withCause(e)
@@ -59,12 +90,4 @@ public class LevelSystemEventHandler {
         }
         plugin.getExplorationWalkTracker().remove(playerId);
     }
-
-    // Further events are wired in dedicated EXP systems (BreakBlock, DiscoverZone, EntityKill, ExplorationWalk).
-    // - BlockBreakEvent -> grant EXP based on block type
-    // - EntityKillEvent -> grant EXP based on entity type
-    // - ItemCraftEvent -> grant EXP based on crafted item
-    // - ExploreEvent -> grant EXP for discovering new areas
-    // 
-    // These will be implemented once we have access to the actual Hytale event types
 }
