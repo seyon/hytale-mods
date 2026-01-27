@@ -16,7 +16,6 @@ Sammlung von Hytale Server Plugins/Mods entwickelt von Seyon.
 
 - Java 25 JDK
 - Gradle (via wrapper included)
-- `HytaleServer.jar` im Ordner `dependency/`
 
 ### Multi-Projekt-Build
 
@@ -60,8 +59,6 @@ gradlew.bat :seyon-motd:tasks
 
 ```
 hytale-mods/
-├── dependency/                    # Gemeinsame Abhängigkeiten
-│   └── HytaleServer.jar          # Hytale Server API
 ├── seyon-core/                   # ⭐ Zentrale Core-Bibliothek
 │   ├── src/
 │   ├── build.gradle
@@ -88,7 +85,6 @@ hytale-mods/
 
 - **Root Build**: Gemeinsame Konfiguration für alle Subprojekte
 - **Subprojekte**: Projektspezifische Konfiguration und Code
-- **Gemeinsame Dependencies**: Zentral verwaltet im `dependency/` Ordner
 - **seyon-core**: Basis-Funktionalität für alle Mods (Plugin-Discovery, etc.)
 
 ### Konfiguration
@@ -119,7 +115,6 @@ Alle Mods verwenden **JSON-Konfigurationsdateien** in ihren jeweiligen Verzeichn
 
 ## 🔗 Dependencies
 
-- **HytaleServer.jar** - Hytale Server API (lokal, siehe `dependency/`)
 - **seyon-core** - Muss von allen Mods als dependency eingebunden werden
 - Wird zentral verwaltet und von allen Projekten genutzt
 

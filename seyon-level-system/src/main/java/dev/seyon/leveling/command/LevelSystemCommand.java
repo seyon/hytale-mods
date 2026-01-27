@@ -66,7 +66,7 @@ public class LevelSystemCommand extends AbstractAsyncCommand {
     }
 
     /**
-     * Open Level System GUI using HyUI
+     * Open Level System GUI using HyUI (simplified version)
      */
     private CompletableFuture<Void> handleGui(CommandContext context, CommandSender sender) {
         if (!(sender instanceof Player player)) {

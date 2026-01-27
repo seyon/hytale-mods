@@ -1,65 +1,65 @@
 # Hytale Modding - AI Agent Guide
 
-Diese Datei sammelt wichtige Erkenntnisse und Best Practices für die Hytale Mod-Entwicklung. Sie soll kontinuierlich erweitert werden, wenn neue Erkenntnisse gewonnen werden.
+This file collects important insights and best practices for Hytale mod development. It is intended to be continuously expanded as new insights are gained.
 
-## ⚠️ WICHTIG: Build-Prozess
+## ⚠️ IMPORTANT: Build Process
 
-**GRADLE BUILD WIRD NIE AUTOMATISCH AUSGEFÜHRT!**
+**GRADLE BUILD IS NEVER EXECUTED AUTOMATICALLY!**
 
-- **NIEMALS** `gradle build`, `./gradlew build` oder ähnliche Build-Befehle automatisch ausführen
-- Der Benutzer führt den Build-Prozess **IMMER MANUELL** aus
-- Nach Code-Änderungen dem Benutzer mitteilen, dass er den Build manuell starten kann
-- Nur `gradle compileJava` ist akzeptabel, um Syntax-Fehler zu prüfen (wenn explizit gewünscht)
+- **NEVER** automatically execute `gradle build`, `./gradlew build`, or similar build commands.
+- The user **ALWAYS** performs the build process **MANUALLY**.
+- After making code changes, inform the user that they can start the build manually.
+- Only `gradle compileJava` is acceptable for checking syntax errors (if explicitly requested).
 
-## Player UUID - Das richtige Pattern
+## Player UUID - The Correct Pattern
 
-### ❌ Veraltet (Deprecated)
+### ❌ Outdated (Deprecated)
 ```java
 UUID uuid = player.getUuid(); // Deprecated, marked for removal
 ```
 
-### ✅ Modern (Component-System)
+### ✅ Modern (Component System)
 ```java
-// Hilfsmethode verwenden (siehe PlayerUtils.java)
+// Use helper method (see PlayerUtils.java)
 UUID uuid = PlayerUtils.getPlayerUUID(player);
 
-// Oder manuell:
+// Or manually:
 Ref<EntityStore> ref = player.getReference();
 Store<EntityStore> store = player.getWorld().getEntityStore().getStore();
 UUIDComponent uuidComponent = store.getComponent(ref, UUIDComponent.getComponentType());
 UUID uuid = uuidComponent.getUuid();
 ```
 
-**Wichtig:** Hytale migriert von Legacy-Methoden zum Component-basierten System. Immer das Component-System verwenden!
+**Important:** Hytale is migrating from legacy methods to a component-based system. Always use the component system!
 
-**ABER:** Component-System funktioniert nur im World-Thread! In Async-Commands muss deprecated `getUuid()` verwendet werden.
+**BUT:** The component system only works in the World thread! In async commands, the deprecated `getUuid()` must be used.
 
-### PlayerUtils Helper-Klasse
-Es wurde eine `PlayerUtils` Klasse erstellt mit der Methode `getPlayerUUID(Player player)`, die die UUID über das Component-System holt. Diese Klasse sollte für alle UUID-Zugriffe verwendet werden.
+### PlayerUtils Helper Class
+A `PlayerUtils` class has been created with the method `getPlayerUUID(Player player)`, which retrieves the UUID via the component system. This class should be used for all UUID accesses.
 
-### Wann welche Methode?
+### When to Use Which Method?
 
 ```java
-// ✅ In Event-Handlern (World-Thread)
+// ✅ In Event Handlers (World Thread)
 UUID uuid = PlayerUtils.getPlayerUUID(player);
 
-// ✅ In Async-Commands (Outside World-Thread) 
-UUID uuid = player.getUuid(); // deprecated aber notwendig
+// ✅ In Async Commands (Outside World Thread) 
+UUID uuid = player.getUuid(); // deprecated but necessary
 
-// ✅ In synchronen Commands (World-Thread)
+// ✅ In Synchronous Commands (World Thread)
 UUID uuid = PlayerUtils.getPlayerUUID(player);
 ```
 
-## Farben für Messages
+## Colors for Messages
 
-### ❌ Nicht verfügbar
+### ❌ Not Available
 ```java
-Color.GOLD // existiert nicht in java.awt.Color
+Color.GOLD // does not exist in java.awt.Color
 ```
 
-### ✅ Verfügbare Alternativen
+### ✅ Available Alternatives
 ```java
-Color.ORANGE  // Verwende statt GOLD
+Color.ORANGE  // Use instead of GOLD
 Color.YELLOW
 Color.GREEN
 Color.RED
@@ -69,19 +69,19 @@ Color.GRAY
 
 ## Entity Component System (ECS)
 
-Hytale verwendet ein Entity-Component-System für alle Spielobjekte:
+Hytale uses an Entity Component System for all game objects:
 
-- **Entities** haben keine direkten Properties, sondern **Components**
-- Components werden über `ComponentType` und `ComponentAccessor` abgerufen
-- Beispiel-Components:
-  - `UUIDComponent` - Eindeutige ID einer Entity
-  - `TransformComponent` - Position und Rotation
-  - `Player` - Player-spezifische Daten
-  - `PlayerRef` - Referenz zu einem Player
+- **Entities** do not have direct properties, but **Components**.
+- Components are retrieved via `ComponentType` and `ComponentAccessor`.
+- Example Components:
+  - `UUIDComponent` - Unique ID of an entity.
+  - `TransformComponent` - Position and rotation.
+  - `Player` - Player-specific data.
+  - `PlayerRef` - Reference to a player.
 
-### Typisches Pattern
+### Typical Pattern
 ```java
-// Component abrufen
+// Retrieve component
 Ref<EntityStore> ref = entity.getReference();
 Store<EntityStore> store = world.getEntityStore().getStore();
 SomeComponent component = store.getComponent(ref, SomeComponent.getComponentType());
@@ -89,7 +89,7 @@ SomeComponent component = store.getComponent(ref, SomeComponent.getComponentType
 
 ## Command System
 
-### Command-Argumente
+### Command Arguments
 ```java
 // Required Argument
 RequiredArg<String> arg = this.withRequiredArg("name", "description", ArgTypes.STRING);
@@ -97,15 +97,15 @@ String value = arg.get(context);
 
 // Optional Argument  
 OptionalArg<Integer> arg = this.withOptionalArg("name", "description", ArgTypes.INTEGER);
-Integer value = arg.get(context); // kann null sein
+Integer value = arg.get(context); // can be null
 ```
 
-### Verfügbare ArgTypes
+### Available ArgTypes
 - `ArgTypes.STRING`
 - `ArgTypes.INTEGER`
 - `ArgTypes.DOUBLE`
 - `ArgTypes.BOOLEAN`
-- Weitere in der Hytale API Dokumentation
+- More in the Hytale API documentation.
 
 ## Inventory System
 
@@ -113,25 +113,25 @@ Integer value = arg.get(context); // kann null sein
 Inventory inventory = player.getInventory();
 ItemContainer storageContainer = inventory.getStorage();
 
-// Items hinzufügen/entfernen
+// Add/remove items
 storageContainer.addItemStack(item);
 storageContainer.removeItemStack(item);
 ```
 
-Siehe: https://hytalemodding.dev/en/docs/guides/plugin/inventory-management
+See: https://hytalemodding.dev/en/docs/guides/plugin/inventory-management
 
-## Datenpersistenz
+## Data Persistence
 
-### Player-Daten speichern
-Hytale hat kein eingebautes PlayerStorage-System für Custom-Daten. Empfohlener Ansatz:
+### Saving Player Data
+Hytale does not have a built-in PlayerStorage system for custom data. Recommended approach:
 
-1. **JSON-basierte Persistenz** mit Gson
-2. **UUID-basierte Dateien**: `playerdata/{uuid}.json`
-3. **In-Memory Cache** für aktive Spieler
-4. **Speichern bei**: Disconnect, Server-Shutdown, periodisch
+1. **JSON-based persistence** using Gson.
+2. **UUID-based files**: `playerdata/{uuid}.json`
+3. **In-memory cache** for active players.
+4. **Save on**: Disconnect, server shutdown, periodically.
 
 ```java
-// Beispiel-Struktur
+// Example structure
 SeyonLeveling/
   playerdata/
     {uuid}.json
@@ -145,59 +145,59 @@ SeyonLeveling/
 
 ## Event System
 
-### Events registrieren
+### Registering Events
 ```java
-// Im Plugin setup()
+// In Plugin setup()
 this.getEventRegistry().registerGlobal(
     PlayerReadyEvent.class, 
     event -> handler.onPlayerReady(event)
 );
 ```
 
-### Wichtige Events
-- `PlayerReadyEvent` - Spieler ist vollständig geladen
-- `BlockBreakEvent` - Block wird abgebaut (noch nicht in Beta verfügbar)
-- `EntityKillEvent` - Entity wird getötet (noch nicht in Beta verfügbar)
+### Important Events
+- `PlayerReadyEvent` - Player is fully loaded.
+- `BlockBreakEvent` - Block is being mined (not yet available in Beta).
+- `EntityKillEvent` - Entity is being killed (not yet available in Beta).
 
-**Hinweis:** Viele Events sind in der aktuellen Hytale Beta noch nicht verfügbar!
+**Note:** Many events are not yet available in the current Hytale Beta!
 
-## Plugin-Struktur
+## Plugin Structure
 
 ### Best Practices
-- **Service-Layer Pattern**: Logik in Services auslagern (nicht in Commands/Events)
-- **Dependency Injection**: Services via Constructor injizieren
-- **Konfiguration**: JSON-basiert mit Gson
-- **Logging**: HytaleLogger verwenden
+- **Service Layer Pattern**: Offload logic to services (not in commands/events).
+- **Dependency Injection**: Inject services via constructor.
+- **Configuration**: JSON-based with Gson.
+- **Logging**: Use HytaleLogger.
 
-### Typische Ordnerstruktur
+### Typical Folder Structure
 ```
 seyon-example/
   src/main/
     java/dev/seyon/example/
       command/          # Commands
-      config/           # Config-Klassen
-      event/            # Event-Handler
-      gui/              # GUI-Klassen
-      integration/      # Integration mit anderen Mods
-      model/            # Datenmodelle
-      service/          # Business-Logik
+      config/           # Config classes
+      event/            # Event handlers
+      gui/              # GUI classes
+      integration/      # Integration with other mods
+      model/            # Data models
+      service/          # Business logic
       SeyonExamplePlugin.java
     resources/
-      manifest.json     # Plugin-Metadata
+      manifest.json     # Plugin metadata
       Server/
-        Item/Items/     # Custom Items
+        Item/Items/     # Custom items
       Common/
         UI/Custom/      # Custom UI
   build.gradle
   gradle.properties
 
-seyon-utils/            # ⭐ Zentrale Utils für alle Mods
+seyon-utils/            # ⭐ Central utils for all mods
   src/main/
     java/dev/seyon/utils/
       PlayerUtils.java
 ```
 
-## Multi-Projekt Setup
+## Multi-Project Setup
 
 ### settings.gradle
 ```gradle
@@ -207,122 +207,122 @@ include 'seyon-motd'
 include 'seyon-leveling'
 ```
 
-### Seyon Utils - Zentrale Utility-Bibliothek
+### Seyon Utils - Central Utility Library
 
-**seyon-utils** ist ein gemeinsames Modul für alle Seyon-Mods:
+**seyon-utils** is a shared module for all Seyon mods:
 
 ```gradle
-// In anderen Mods als Dependency einbinden
+// Include as dependency in other mods
 dependencies {
     implementation project(':seyon-utils')
 }
 ```
 
-**Verfügbare Utils:**
-- `PlayerUtils.getPlayerUUID(player)` - Sichere UUID-Abfrage via Component-System
+**Available Utils:**
+- `PlayerUtils.getPlayerUUID(player)` - Safe UUID retrieval via component system.
 
-**Wann seyon-utils verwenden:**
-- Gemeinsame Logik, die in mehreren Mods benötigt wird
-- Thread-Safety-kritische Operationen (z.B. UUID-Abfrage)
-- Wiederverwendbare Helper-Klassen
+**When to use seyon-utils:**
+- Shared logic required in multiple mods.
+- Thread-safety critical operations (e.g., UUID retrieval).
+- Reusable helper classes.
 
-### Abhängigkeiten zwischen Projekten
+### Dependencies Between Projects
 ```json
-// In manifest.json - WICHTIG: Format muss "Group:Name" sein!
+// In manifest.json - IMPORTANT: Format must be "Group:Name"!
 "OptionalDependencies": {
-    "Seyon:SeyonMagic": "*"  // ✅ Korrekt: Group:Name
+    "Seyon:SeyonMagic": "*"  // ✅ Correct: Group:Name
 }
 
-// ❌ FALSCH - Server startet nicht:
+// ❌ WRONG - Server won't start:
 "OptionalDependencies": {
-    "SeyonMagic": "*"  // Fehler: "String does not match <group>:<name>"
+    "SeyonMagic": "*"  // Error: "String does not match <group>:<name>"
 }
 ```
 
-**Integration prüfen:**
+**Checking Integration:**
 ```java
-// Integration prüfen
+// Check integration
 try {
     Class.forName("dev.seyon.magic.SeyonMagicPlugin");
-    // Integration implementieren
+    // Implement integration
 } catch (ClassNotFoundException e) {
-    // Anderer Mod nicht verfügbar
+    // Other mod not available
 }
 ```
 
-## Bekannte Einschränkungen (Stand: Hytale Beta)
+## Known Limitations (As of Hytale Beta)
 
-- Keine `Color.GOLD` in `java.awt.Color`
-- Viele Game-Events noch nicht verfügbar (BlockBreak, EntityKill, etc.)
-- Kein eingebautes Attribute-System für Modifiers
-- GUI-System noch in Entwicklung
-- Keine Item-Tooltip-Extension API
+- No `Color.GOLD` in `java.awt.Color`.
+- Many game events not yet available (BlockBreak, EntityKill, etc.).
+- No built-in attribute system for modifiers.
+- GUI system still under development.
+- No Item Tooltip Extension API.
 
-## ❗ Häufige Fehler und Lösungen
+## ❗ Common Errors and Solutions
 
-### Server startet nicht: "String does not match <group>:<name>"
+### Server won't start: "String does not match <group>:<name>"
 
-**Problem:** Dependencies in `manifest.json` haben falsches Format
+**Problem:** Dependencies in `manifest.json` have the wrong format.
 
 ```json
-// ❌ FALSCH
+// ❌ WRONG
 "OptionalDependencies": {
     "SeyonMagic": "*"
 }
 
-// ✅ RICHTIG
+// ✅ CORRECT
 "OptionalDependencies": {
     "Seyon:SeyonMagic": "*"
 }
 ```
 
-**Lösung:** Immer das Format `"Group:Name"` verwenden!
+**Solution:** Always use the `"Group:Name"` format!
 
-### IllegalStateException: Assert not in thread bei PlayerUtils.getPlayerUUID()
+### IllegalStateException: Assert not in thread at PlayerUtils.getPlayerUUID()
 
-**Problem:** `PlayerUtils.getPlayerUUID()` greift auf Component-System zu, welches nur im World-Thread funktioniert
+**Problem:** `PlayerUtils.getPlayerUUID()` accesses the component system, which only works in the World thread.
 
-**Lösung:** 
-- In Event-Handlern: `player.getUuid()` verwenden (deprecated, aber sicherer)
-- In Async-Commands: `player.getUuid()` verwenden (deprecated, aber notwendig)
+**Solution:** 
+- In event handlers: use `player.getUuid()` (deprecated, but safer).
+- In async commands: use `player.getUuid()` (deprecated, but necessary).
 
 ```java
-// ✅ In Events - Einfach deprecated Methode verwenden
+// ✅ In Events - Just use the deprecated method
 UUID uuid = player.getUuid(); // deprecated but safe
 
-// ✅ In Async Commands - Auch deprecated Methode
+// ✅ In Async Commands - Also deprecated method
 UUID uuid = player.getUuid(); // deprecated but necessary
 
-// ⚠️ PlayerUtils.getPlayerUUID() nur in synchronem World-Thread Code verwenden!
+// ⚠️ Use PlayerUtils.getPlayerUUID() only in synchronous World thread code!
 ```
 
-**Wichtig:** `PlayerUtils.getPlayerUUID()` kann Threading-Probleme in Events verursachen. Besser die deprecated `getUuid()` verwenden.
+**Important:** `PlayerUtils.getPlayerUUID()` can cause threading issues in events. It's better to use the deprecated `getUuid()`.
 
-### Connection Issues mit ScheduledExecutorService in Events
+### Connection Issues with ScheduledExecutorService in Events
 
-**Problem:** Scheduler in PlayerReady Event kann Connection-Probleme verursachen
+**Problem:** Using a scheduler in the `PlayerReady` event can cause connection problems.
 
 ```java
-// ❌ PROBLEMATISCH - Kann zu CompletionException führen
+// ❌ PROBLEMATIC - Can lead to CompletionException
 scheduler.schedule(() -> {
     player.sendMessage(...);
 }, 3, TimeUnit.SECONDS);
 ```
 
-**Lösung:** Nachrichten direkt senden, keinen Scheduler verwenden
+**Solution:** Send messages directly; do not use a scheduler.
 
 ```java
-// ✅ SICHER - Direkt senden
+// ✅ SAFE - Send directly
 player.sendMessage(...);
 ```
 
-### Color.GOLD nicht gefunden
+### Color.GOLD not found
 
-**Problem:** `Color.GOLD` existiert nicht in `java.awt.Color`
+**Problem:** `Color.GOLD` does not exist in `java.awt.Color`.
 
-**Lösung:** `Color.ORANGE` verwenden (siehe Abschnitt "Farben für Messages")
+**Solution:** Use `Color.ORANGE` (see "Colors for Messages" section).
 
-## Debugging-Tipps
+## Debugging Tips
 
 ### Logging
 ```java
@@ -332,8 +332,8 @@ logger.at(Level.WARNING).log("Warning");
 logger.at(Level.SEVERE).withCause(exception).log("Error");
 ```
 
-### Async-Operationen
-Commands können asynchron sein:
+### Async Operations
+Commands can be asynchronous:
 ```java
 public class MyCommand extends AbstractAsyncCommand {
     @Override
@@ -344,126 +344,127 @@ public class MyCommand extends AbstractAsyncCommand {
 }
 ```
 
-## 📚 Ressourcen & Dokumentation
+## 📚 Resources & Documentation
 
-**WICHTIG für LLMs:** Bevor du eine Aufgabe bearbeitest, lies die relevanten Dokumentationen durch! Die folgenden Ressourcen enthalten detaillierte Informationen zu allen Hytale Modding-Themen.
+**IMPORTANT for LLMs:** Before working on a task, read through the relevant documentation! The following resources contain detailed information on all Hytale modding topics.
 
-### API-Referenzen (Listen)
+### API References (Lists)
 
-Diese Seiten enthalten vollständige Listen aller verfügbaren Elemente:
+These pages contain complete lists of all available elements:
 
 - **Events**: https://hytalemodding.dev/en/docs/server/events
-  - Alle verfügbaren Events (PlayerReadyEvent, BlockBreakEvent, etc.)
-  - Event-Hierarchie (IEvent, IAsyncEvent, EcsEvent)
+  - All available events (PlayerReadyEvent, BlockBreakEvent, etc.)
+  - Event hierarchy (IEvent, IAsyncEvent, EcsEvent)
   
 - **Sounds**: https://hytalemodding.dev/en/docs/server/sounds
-  - Alle Sound-IDs die in `SoundEvent.getAssetMap()` verwendet werden können
-  - Kategorien: SFX, Music, Ambient
+  - All sound IDs that can be used in `SoundEvent.getAssetMap()`
+  - Categories: SFX, Music, Ambient
   
 - **Entities**: https://hytalemodding.dev/en/docs/server/entities
-  - Alle spawnable Entity-IDs
+  - All spawnable entity IDs
   - NPCs, Mobs, Projectiles, etc.
 
-### Detaillierte Guides & Tutorials
+### Detailed Guides & Tutorials
 
-**⚠️ Diese Guides IMMER lesen bevor du die entsprechende Aufgabe bearbeitest!**
+**⚠️ ALWAYS read these guides before working on the corresponding task!**
 
-#### Grundlagen
+#### Fundamentals
 - **Logging**: https://hytalemodding.dev/en/docs/guides/plugin/logging
-  - HytaleLogger verwenden, Log-Levels, Template-Argumente
+  - Using HytaleLogger, log levels, template arguments
   
 - **Commands**: https://hytalemodding.dev/en/docs/guides/plugin/creating-commands
   - AbstractAsyncCommand, AbstractPlayerCommand, AbstractTargetPlayerCommand
-  - Command-Argumente (Required, Optional, Default, Flag)
-  - Argument-Validatoren, Permissions, Command-Variants
+  - Command arguments (Required, Optional, Default, Flag)
+  - Argument validators, permissions, command variants
   
 - **Events**: https://hytalemodding.dev/en/docs/guides/plugin/creating-events
-  - Event-Registrierung, Event-Handler
-  - ECS Events vs. normale Events
+  - Event registration, event handlers
+  - ECS events vs. regular events
 
-#### Kommunikation & UI
+#### Communication & UI
 - **Sounds**: https://hytalemodding.dev/en/docs/guides/plugin/playing-sounds
-  - Sound-Indizes, TransformComponent, SoundUtil
-  - 3D-Sounds abspielen
+  - Sound indices, TransformComponent, SoundUtil
+  - Playing 3D sounds
   
 - **Chat Formatting**: https://hytalemodding.dev/en/docs/guides/plugin/chat-formatting
   - PlayerChatEvent, Message.join(), Color
-  - TinyMessage für Rich-Text (Gradients, Hex-Colors, Links)
+  - TinyMessage for rich text (gradients, hex colors, links)
   
 - **Custom UI**: https://hytalemodding.dev/en/docs/guides/plugin/ui
-  - .ui Files, CustomUIHud, InteractiveCustomUIPage
-  - UI-Elemente, Event-Binding, Dynamisches Update
+  - .ui files, CustomUIHud, InteractiveCustomUIPage
+  - UI elements, event binding, dynamic updates
+  - HyUI documentation: https://github.com/Elliesaur/HyUI/blob/main/docs/getting-started.md
   
 - **Title Holograms**: https://hytalemodding.dev/en/docs/guides/plugin/text-hologram#bonus-section---creating-title-holograms-with-code
-  - Floating Text via Entity-Nameplate
-  - Programmtisches Erstellen von Holograms
+  - Floating text via entity nameplate
+  - Programmatic creation of holograms
 
-#### Spieler-Interaktion
+#### Player Interaction
 - **Inventory**: https://hytalemodding.dev/en/docs/guides/plugin/inventory-management
-  - ItemStack erstellen, ItemContainer verwenden
+  - Creating ItemStack, using ItemContainer
   - Hotbar, Storage, Armor, Backpack
   
 - **Player Input**: https://hytalemodding.dev/en/docs/guides/plugin/player-input-guide
-  - SyncInteractionChains Packet
+  - SyncInteractionChains packet
   - InteractionTypes (Primary, Secondary, Use)
   
 - **Player Stats**: https://hytalemodding.dev/en/docs/guides/plugin/player-stats
   - EntityStatMap, DefaultEntityStatTypes
-  - Health, Stamina, Mana manipulieren
+  - Manipulating health, stamina, mana
   
 - **Player Death**: https://hytalemodding.dev/en/docs/guides/plugin/player-death-event
   - OnDeathSystem, DeathComponent
-  - Death-Info und Damage-Tracking
+  - Death info and damage tracking
 
-#### Welt & Entities
+#### World & Entities
 - **Custom Blocks**: https://hytalemodding.dev/en/docs/guides/plugin/creating-block
-  - Block-JSON erstellen, Textures, BlockType
-  - Asset-Pack aktivieren
+  - Creating block JSON, textures, BlockType
+  - Enabling asset pack
   
 - **Spawning Entities**: https://hytalemodding.dev/en/docs/guides/plugin/spawning-entities
-  - Holder<EntityStore> erstellen
-  - Components hinzufügen (Transform, Model, BoundingBox)
-  - world.execute() Pattern
+  - Creating Holder<EntityStore>
+  - Adding components (Transform, Model, BoundingBox)
+  - world.execute() pattern
   
 - **Spawning NPCs**: https://hytalemodding.dev/en/docs/guides/plugin/spawning-npcs
-  - NPCPlugin.spawnNPC() Helper
-  - NPC-Inventory konfigurieren
-  - Einfacher als manuelles Entity-Spawning
+  - NPCPlugin.spawnNPC() helper
+  - Configuring NPC inventory
+  - Simpler than manual entity spawning
 
 #### Administration
 - **Permissions**: https://hytalemodding.dev/en/docs/guides/plugin/permission-management
-  - PermissionsModule verwenden
-  - User/Group Permissions verwalten
-  - Permission-Checks
+  - Using PermissionsModule
+  - Managing user/group permissions
+  - Permission checks
 
-### Wie du diese Ressourcen nutzen sollst:
+### How you should use these resources:
 
-1. **Vor jeder Aufgabe**: Identifiziere welche Guides relevant sind
-2. **Lies die Guides**: Nutze WebFetch um die relevanten Seiten zu lesen
-3. **Verstehe die Patterns**: Achte auf Code-Beispiele und Best Practices
-4. **Implementiere**: Verwende die Patterns aus den Guides
-5. **Fehlersuche**: Konsultiere die Guides bei Problemen
+1. **Before every task**: Identify which guides are relevant.
+2. **Read the guides**: Use WebFetch (or your internal knowledge) to read the relevant pages.
+3. **Understand the patterns**: Pay attention to code examples and best practices.
+4. **Implement**: Use the patterns from the guides.
+5. **Troubleshooting**: Consult the guides when problems arise.
 
-**Beispiel-Workflow:**
+**Example Workflow:**
 ```
-User: "Erstelle einen Command der NPCs spawnt"
+User: "Create a command that spawns NPCs"
 
-LLM sollte:
-1. WebFetch: https://hytalemodding.dev/en/docs/guides/plugin/creating-commands
-2. WebFetch: https://hytalemodding.dev/en/docs/guides/plugin/spawning-npcs
-3. Guides lesen und verstehen
-4. Code implementieren basierend auf den Patterns
+LLM should:
+1. Consult: https://hytalemodding.dev/en/docs/guides/plugin/creating-commands
+2. Consult: https://hytalemodding.dev/en/docs/guides/plugin/spawning-npcs
+3. Read and understand guides
+4. Implement code based on the patterns
 ```
 
 ---
 
-## 📝 Erweiterungshinweise
+## 📝 Extension Notes
 
-**Diese Datei sollte kontinuierlich aktualisiert werden mit:**
-- Neuen API-Erkenntnissen
-- Häufigen Fehlermustern und deren Lösungen  
-- Best Practices aus der Praxis
-- Änderungen in der Hytale API
-- Workarounds für Beta-Limitierungen
+**This file should be continuously updated with:**
+- New API insights
+- Frequent error patterns and their solutions
+- Real-world best practices
+- Changes in the Hytale API
+- Workarounds for Beta limitations
 
-**Bei jeder wichtigen Erkenntnis:** Diese Datei erweitern, damit zukünftige LLM-Interaktionen davon profitieren können!
+**With every important insight:** Expand this file so that future LLM interactions can benefit!

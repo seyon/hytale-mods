@@ -128,9 +128,8 @@ cd seyon-leveling
 # JAR wird erstellt in: release/SeyonLevelSystem-1.0.0.jar
 
 # Zum Testen:
-# 1. HytaleServer.jar benötigt in ../dependency/
-# 2. JAR in Hytale Server plugins/ Ordner kopieren
-# 3. Server starten und testen
+# 1. JAR in Hytale Server plugins/ Ordner kopieren
+# 2. Server starten und testen
 ```
 
 ## 🚀 Nächste Schritte

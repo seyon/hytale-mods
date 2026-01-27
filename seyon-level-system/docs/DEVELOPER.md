@@ -132,10 +132,9 @@ seyon-level-system/
 ## Testing Notes
 
 Since Hytale server is not fully released yet, testing requires:
-1. Valid HytaleServer.jar in `../dependency/`
-2. Gradle build: `./gradlew build`
-3. JAR output in `release/` folder
-4. Test on actual Hytale server
+1. Gradle build: `./gradlew build`
+2. JAR output in `release/` folder
+3. Test on actual Hytale server
 
 ## Future Enhancements
 

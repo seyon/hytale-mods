@@ -47,7 +47,6 @@ seyon-arcane-arts/
 
 - Java 25 JDK
 - Gradle (via wrapper included)
-- `HytaleServer.jar` im Ordner `../dependency/`
 
 ### Build
 
@@ -118,10 +117,6 @@ Siehe `docs/` Ordner für detaillierte Informationen:
 - [AFFINITIES.md](docs/AFFINITIES.md) - Element-Affinitäten
 - [ANIMATIONS.md](docs/ANIMATIONS.md) - Effekte & Animationen
 - [CONFIG.md](docs/CONFIG.md) - Konfiguration
-
-## 🔗 Abhängigkeiten
-
-- **HytaleServer.jar** - Hytale Server API (lokal, siehe `../dependency/`)
 
 ## 📝 Lizenz
 
